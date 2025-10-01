@@ -4,13 +4,16 @@ import { Button } from "@/components/shared/ui/Button"
 import { Input } from "@/components/shared/ui/Input"
 import { Path } from "@/utils/enum"
 import { ArrowRight, Eye, EyeOff, Github, Lock, Sparkles, Twitter, User } from "lucide-react"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useReducer, useState } from "react"
 import { toast } from "react-hot-toast"
 export default function LoginPage() {
     const router = useRouter()
+    const session = useSession()
+    console.log(session)
+    const [email, setEmail] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
@@ -166,12 +169,12 @@ export default function LoginPage() {
                                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                             Password
                                         </label>
-                                        {/* <Link
+                                        <Link
                                             href="/forgot-password"
                                             className="text-sm text-blue-500 hover:text-blue-600 transition-colors hover:underline"
                                         >
                                             Forgot password?
-                                        </Link> */}
+                                        </Link>
                                     </div>
                                     <div className="relative group">
                                         <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-teal-400 rounded-md opacity-30 blur-sm group-hover:opacity-40 transition-opacity"></div>

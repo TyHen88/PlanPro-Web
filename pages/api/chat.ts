@@ -2,7 +2,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, ChatSession } from '@google/generative-ai';
 
-const MODEL_NAME = "gemini-1.5-flash"; // Or your preferred model
+const MODEL_NAME = "gemini-2.5-flash"; // Upgraded to Pro for better image processing capabilities
 
 // Ensure the API key is available
 if (!process.env.GOOGLE_API_KEY) {
@@ -24,10 +24,11 @@ export default async function handler(
   }
 
   try {
-    const { message, history, sessionId } = req.body as {
+    const { message, history, sessionId, images } = req.body as {
       message: string;
       history?: { role: 'user' | 'model'; parts: { text: string }[] }[];
       sessionId?: string; // Optional: to maintain separate chat sessions
+      images?: string[]; // Base64 encoded images
     };
 
     if (!message) {
@@ -39,39 +40,56 @@ export default async function handler(
     // Use sessionId to retrieve or start a new chat session
     const currentSessionId = sessionId || 'default_session';
     if (sessionId && chatHistories[currentSessionId]) {
-        chat = chatHistories[currentSessionId];
-        // Note: If history is also passed, you might want to reconcile it
-        // or trust the history managed by the ChatSession object.
-        // For simplicity, we're prioritizing the ChatSession's internal history.
+      chat = chatHistories[currentSessionId];
+      // Note: If history is also passed, you might want to reconcile it
+      // or trust the history managed by the ChatSession object.
+      // For simplicity, we're prioritizing the ChatSession's internal history.
     } else {
-        // Start a new chat session
-        const generationConfig = {
-          temperature: 0.9, // Adjust as needed
-          topK: 1,
-          topP: 1,
-          maxOutputTokens: 2048, // Adjust as needed
-        };
+      // Start a new chat session
+      const generationConfig = {
+        temperature: 0.9, // Adjust as needed
+        topK: 1,
+        topP: 1,
+        maxOutputTokens: 2048, // Adjust as needed
+      };
 
-        const safetySettings = [
-          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-        ];
+      const safetySettings = [
+        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+      ];
 
-        chat = genAI.getGenerativeModel({ model: MODEL_NAME })
-          .startChat({
-            generationConfig,
-            safetySettings,
-            history: history || [], // Initialize with provided history if any
-          });
+      chat = genAI.getGenerativeModel({ model: MODEL_NAME })
+        .startChat({
+          generationConfig,
+          safetySettings,
+          history: history || [], // Initialize with provided history if any
+        });
 
-        if(sessionId) {
-            chatHistories[currentSessionId] = chat;
-        }
+      if (sessionId) {
+        chatHistories[currentSessionId] = chat;
+      }
     }
 
-    const result = await chat.sendMessage(message);
+    // Prepare message parts for multimodal input
+    const messageParts: any[] = [{ text: message }];
+
+    // Add images if provided
+    if (images && images.length > 0) {
+      for (const imageBase64 of images) {
+        // Remove data URL prefix if present
+        const base64Data = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+        messageParts.push({
+          inlineData: {
+            data: base64Data,
+            mimeType: 'image/jpeg' // Default to JPEG, could be enhanced to detect actual type
+          }
+        });
+      }
+    }
+
+    const result = await chat.sendMessage(messageParts);
     const response = result.response;
     const aiMessage = response.text();
 

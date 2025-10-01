@@ -36,12 +36,25 @@ const ChatMessageDisplay: React.FC<ChatMessageDisplayProps> = ({ message, curren
       )}
       <div
         className={`max-w-[80%] rounded-2xl whitespace-pre-wrap break-words shadow-md transition-all duration-300 ${isUser
-            ? `bg-gradient-to-r ${currentTheme.gradient} text-white rounded-tr-none`
-            : isSystem
-              ? "bg-gradient-to-r from-gray-200 to-gray-300 text-gray-900 italic rounded-tl-none"
-              : "bg-gray-500 text-gray-900 border border-gray-200 rounded-tl-none"
+          ? `bg-gradient-to-r ${currentTheme.gradient} text-white rounded-tr-none`
+          : isSystem
+            ? "bg-gradient-to-r from-gray-200 to-gray-300 text-gray-900 italic rounded-tl-none"
+            : "bg-gray-500 text-gray-900 border border-gray-200 rounded-tl-none"
           } p-4`}
       >
+        {/* Display images if present */}
+        {message.images && message.images.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {message.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Upload ${index + 1}`}
+                className="max-w-32 max-h-32 object-cover rounded-lg border border-white/20"
+              />
+            ))}
+          </div>
+        )}
         <MarkdownContentChat content={message.text} />
       </div>
       {isUser && (
