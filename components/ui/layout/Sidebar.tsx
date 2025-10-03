@@ -229,13 +229,13 @@ const MENU_ITEMS = [
     //     color: "purple" as const,
     //     notification: undefined,
     // },
-    // {
-    //     href: Path.CHAT_PAGE,
-    //     icon: <MessageCircle size={20} />,
-    //     text: "We Talk",
-    //     color: "purple" as const,
-    //     notification: undefined,
-    // },
+    {
+        href: Path.CHAT_PAGE,
+        icon: <MessageCircle size={20} />,
+        text: "We Talk",
+        color: "purple" as const,
+        notification: undefined,
+    },
 ] as const
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {

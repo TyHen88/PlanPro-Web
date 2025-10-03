@@ -18,6 +18,8 @@ import { PasswordUtils } from "@/utils/PasswordUtils";
 import toast from "react-hot-toast";
 
 interface RegisterFormValues {
+    first_name: string;
+    last_name: string;
     user_name: string;
     email: string;
     phone_number: string;
@@ -40,6 +42,8 @@ export default function RegisterPage() {
     } = useForm<RegisterFormValues>({
         mode: "onChange",
         defaultValues: {
+            first_name: typeof state?.value === 'object' && state.value !== null && 'data' in state.value && (state.value as any).data?.first_name ? (state.value as any).data.first_name : "",
+            last_name: typeof state?.value === 'object' && state.value !== null && 'data' in state.value && (state.value as any).data?.last_name ? (state.value as any).data.last_name : "",
             user_name: typeof state?.value === 'object' && state.value !== null && 'data' in state.value && (state.value as any).data?.user_name ? (state.value as any).data.user_name : "",
             email: typeof state?.value === 'object' && state.value !== null && 'data' in state.value && (state.value as any).data?.email ? (state.value as any).data.email : "",
             phone_number: typeof state?.value === 'object' && state.value !== null && 'data' in state.value && (state.value as any).data?.phone_number ? (state.value as any).data.phone_number : "",
@@ -58,6 +62,8 @@ export default function RegisterPage() {
         const toastId = toast.loading("Signing up...");
         try {
             const requestBody = {
+                first_name: data.first_name,
+                last_name: data.last_name,
                 user_name: data.user_name,
                 email: data.email,
                 phone_number: data.phone_number,
@@ -131,10 +137,48 @@ export default function RegisterPage() {
                             )}
 
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                                {/* Name */}
+                                {/* Name (First and Last side by side) */}
+                                <div className="flex space-x-4">
+                                    {/* First Name */}
+                                    <div className="flex-1 space-y-2">
+                                        <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                                            First Name
+                                        </label>
+                                        <div className="relative group">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                                <User className="h-5 w-5 text-orange-500" />
+                                            </div>
+                                            <Input
+                                                type="text"
+                                                id="first_name"
+                                                placeholder="First Name"
+                                                className="pl-10 border-transparent bg-white relative z-10"
+                                                {...register("first_name", { required: "First name is required" })}
+                                            />
+                                        </div>
+                                    </div>
+                                    {/* Last Name */}
+                                    <div className="flex-1 space-y-2">
+                                        <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                                            Last Name
+                                        </label>
+                                        <div className="relative group">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                                <User className="h-5 w-5 text-orange-500" />
+                                            </div>
+                                            <Input
+                                                type="text"
+                                                id="last_name"
+                                                placeholder="Last Name"
+                                                className="pl-10 border-transparent bg-white relative z-10"
+                                                {...register("last_name", { required: "Last name is required" })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="space-y-2">
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                        Full Name
+                                        Username
                                     </label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
