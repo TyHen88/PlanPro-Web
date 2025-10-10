@@ -293,7 +293,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <div className="space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Phone className="w-4 h-4 text-green-500" />
-                                        Phone Number
+                                        Phone Number (Optional)
                                     </Label>
                                     {isEditing ? (
                                         <Input
