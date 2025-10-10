@@ -36,6 +36,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
         phone: profile_data?.phone_number || "0000000000",
         birthday: profile_data?.dob || "1990-01-01",
         profile_image_url: profile_data?.profile_image_url || profile,
+        auth_provider: profile_data?.auth_provider || "LOCAL",
     })
 
     const [editData, setEditData] = useState(profileData)
@@ -106,9 +107,9 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                 setIsEditing(false)
             }
             console.log("requestData", requestData)
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating profile:", error)
-            toast.error("Failed to update profile. Please try again.")
+            toast.error("Failed : " + error?.message)
         } finally {
             setIsLoading(false)
         }
@@ -164,43 +165,49 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <p className="text-white/80 mb-3">@{profileData.username ?? "-"}</p>
                             </div>
                         </div>
+                        {
+                            profileData.auth_provider !== "GOOGLE" && (
+                                <>
+                                    {/* Edit/Save/Cancel buttons */}
+                                    {activeTab === "personal" && (
+                                        <div className="flex gap-2">
+                                            {!isEditing ? (
+                                                <Button
+                                                    onClick={handleEdit}
+                                                    variant="secondary"
+                                                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                                                >
+                                                    <Edit className="w-4 h-4 mr-2" />
+                                                    Edit Profile
+                                                </Button>
+                                            ) : (
+                                                <>
+                                                    <Button
+                                                        onClick={handleCancel}
+                                                        variant="secondary"
+                                                        disabled={isLoading}
+                                                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                                                    >
+                                                        <X className="w-4 h-4 mr-2" />
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        onClick={handleSave}
+                                                        variant="secondary"
+                                                        disabled={isLoading}
+                                                        className="bg-white/90 hover:bg-white text-purple-600 border-0"
+                                                    >
+                                                        {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                        {isLoading ? "Saving..." : "Save Changes"}
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
+                            )
+                        }
 
-                        {/* Edit/Save/Cancel buttons */}
-                        {activeTab === "personal" && (
-                            <div className="flex gap-2">
-                                {!isEditing ? (
-                                    <Button
-                                        onClick={handleEdit}
-                                        variant="secondary"
-                                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                                    >
-                                        <Edit className="w-4 h-4 mr-2" />
-                                        Edit Profile
-                                    </Button>
-                                ) : (
-                                    <>
-                                        <Button
-                                            onClick={handleCancel}
-                                            variant="secondary"
-                                            disabled={isLoading}
-                                            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                                        >
-                                            <X className="w-4 h-4 mr-2" />
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            onClick={handleSave}
-                                            variant="secondary"
-                                            disabled={isLoading}
-                                            className="bg-white/90 hover:bg-white text-purple-600 border-0"
-                                        >
-                                            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                            {isLoading ? "Saving..." : "Save Changes"}
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        )}
                     </div>
                 </div>
 
