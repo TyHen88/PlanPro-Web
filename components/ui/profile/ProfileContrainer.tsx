@@ -70,7 +70,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                     const fileResponse = await profileService.uploadImage(fileImage);
                     imageUrl = fileResponse.data.data.image_url;
                 } catch (error) {
-                    toast.error("Fail to upload image");    
+                    toast.error("Fail to upload image");
                     return;
                 }
             }
@@ -161,7 +161,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <h2 className="text-3xl font-bold mb-2">
                                     {profileData.firstName} {profileData.lastName}
                                 </h2>
-                                <p className="text-white/80 mb-3">@{profileData.username}</p>
+                                <p className="text-white/80 mb-3">@{profileData.username ?? "-"}</p>
                             </div>
                         </div>
 
@@ -248,7 +248,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-purple-200 focus:border-purple-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.firstName}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.firstName ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -266,7 +266,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-purple-200 focus:border-purple-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.lastName}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.lastName ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -285,7 +285,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-blue-200 focus:border-blue-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.email}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.email ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -304,7 +304,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-green-200 focus:border-green-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.phone}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.phone === null ? "-" : profileData.phone}</div>
                                     )}
                                 </div>
 
@@ -322,7 +322,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-red-200 focus:border-red-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.username}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.username ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -346,7 +346,11 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                                 year: "numeric",
                                                 month: "long",
                                                 day: "numeric",
-                                            })}
+                                            }) === null ? new Date(profileData.birthday).toLocaleDateString("en-US", {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            }) : "-"}
                                         </div>
                                     )}
                                 </div>
@@ -364,7 +368,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                         <Button variant="outline" onClick={onClose} disabled={isLoading}>
                             Close
                         </Button>
-                        
+
                     </div>
                 </div>
             </div>

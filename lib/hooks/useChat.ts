@@ -132,7 +132,6 @@ export const useChat = (currentUser: User) => {
             }
         } catch (err) {
             console.error('❌ Error sending message:', err);
-
             // Provide specific error messages
             let errorMessage = 'Failed to send message';
             if (err instanceof Error) {
