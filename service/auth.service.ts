@@ -1,5 +1,5 @@
-import { AuthRequest, SignupRequest } from "@/lib/types/auth";
-import {http} from "@/utils/http";
+import { AuthRequest, ResetPasswordRequest, SignupRequest, VerifyForgotPasswordRequest } from "@/lib/types/auth";
+import { http } from "@/utils/http";
 const ServiceId = {
     LOGIN: '/api/wb/v1/auth/login',
     LOGOUT: '/api/wb/v1/auth/logout',
@@ -8,7 +8,9 @@ const ServiceId = {
     SEND_RESET_OTP: '/api/wb/v1/otp/send-reset',
     VERIFY_OTP: '/api/wb/v1/otp/verify',
     RESET_PASSWORD: '/api/wb/v1/auth/reset-password',
-    TOKEN: '/api/wb/v1/auth/login/token'
+    TOKEN: '/api/wb/v1/auth/login/token',
+    FORGOT_PASSWORD: '/api/wb/v1/auth/forgot-password',
+    REFRESH_TOKEN: '/api/wb/v1/auth/get-user-session',
 }
 
 const signup = (data: SignupRequest) => {
@@ -20,12 +22,24 @@ const logout = () => {
 }
 
 const login = (data: AuthRequest) => {
-    console.log(data);
     return http.post(ServiceId.LOGIN, data);
+}
+
+const forgotPassword = (data: VerifyForgotPasswordRequest) => {
+    return http.post(ServiceId.FORGOT_PASSWORD, data);
+}
+const resetPassword = (data: ResetPasswordRequest) => {
+    return http.post(ServiceId.RESET_PASSWORD, data);
+}
+const getRefreshToken = (data: VerifyForgotPasswordRequest) => {
+    return http.get(ServiceId.REFRESH_TOKEN + `/${data.email}`);
 }
 
 export const authService = {
     signup,
     logout,
-    login
+    login,
+    forgotPassword,
+    resetPassword,
+    getRefreshToken
 }

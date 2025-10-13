@@ -104,6 +104,51 @@ export const authOption: NextAuthOptions = ({
                 }
                 throw new Error(response?.message || "Invalid username or password")
             }
+        }),
+        CredentialsProvider({
+            id: "google-oauth",
+            name: "Google OAuth",
+            credentials: {
+                token: { label: "Token", type: "text" },
+                tokenType: { label: "Token Type", type: "text" }
+            },
+            async authorize(credentials): Promise<User | null> {
+                try {
+                    if (!credentials?.token) {
+                        throw new Error("No token provided");
+                    }
+
+                    // Parse the JWT token to extract user information
+                    const tokenParts = credentials.token.split(".");
+                    if (tokenParts.length !== 3) {
+                        throw new Error("Invalid token format");
+                    }
+
+                    // Decode the token payload
+                    const payload = JSON.parse(atob(tokenParts[1]));
+
+                    // Return user data in the format expected by NextAuth
+                    const user: User = {
+                        id: payload.id || payload.sub,
+                        status: {
+                            code: 200,
+                            message: "Success"
+                        },
+                        data: {
+                            access_token: credentials.token,
+                            token_type: credentials.tokenType || "Bearer",
+                            expires_in: payload.exp ? payload.exp - Math.floor(Date.now() / 1000) : 7200
+                        },
+                        sub: payload.sub || payload.email,
+                        scope: "user"
+                    };
+
+                    return user;
+                } catch (error) {
+                    console.error("Google OAuth error:", error);
+                    throw new Error("Failed to authenticate with Google");
+                }
+            }
         })
     ],
     session: {
@@ -134,6 +179,7 @@ declare module "next-auth" {
     }
 
     interface User {
+        id?: string;
         status: {
             code: number;
             message: string;

@@ -36,6 +36,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
         phone: profile_data?.phone_number || "0000000000",
         birthday: profile_data?.dob || "1990-01-01",
         profile_image_url: profile_data?.profile_image_url || profile,
+        auth_provider: profile_data?.auth_provider || "LOCAL",
     })
 
     const [editData, setEditData] = useState(profileData)
@@ -70,7 +71,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                     const fileResponse = await profileService.uploadImage(fileImage);
                     imageUrl = fileResponse.data.data.image_url;
                 } catch (error) {
-                    toast.error("Fail to upload image");    
+                    toast.error("Fail to upload image");
                     return;
                 }
             }
@@ -106,9 +107,9 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                 setIsEditing(false)
             }
             console.log("requestData", requestData)
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error updating profile:", error)
-            toast.error("Failed to update profile. Please try again.")
+            toast.error("Failed : " + error?.message)
         } finally {
             setIsLoading(false)
         }
@@ -161,46 +162,52 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <h2 className="text-3xl font-bold mb-2">
                                     {profileData.firstName} {profileData.lastName}
                                 </h2>
-                                <p className="text-white/80 mb-3">@{profileData.username}</p>
+                                <p className="text-white/80 mb-3">@{profileData.username ?? "-"}</p>
                             </div>
                         </div>
+                        {
+                            profileData.auth_provider !== "GOOGLE" && (
+                                <>
+                                    {/* Edit/Save/Cancel buttons */}
+                                    {activeTab === "personal" && (
+                                        <div className="flex gap-2">
+                                            {!isEditing ? (
+                                                <Button
+                                                    onClick={handleEdit}
+                                                    variant="secondary"
+                                                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                                                >
+                                                    <Edit className="w-4 h-4 mr-2" />
+                                                    Edit Profile
+                                                </Button>
+                                            ) : (
+                                                <>
+                                                    <Button
+                                                        onClick={handleCancel}
+                                                        variant="secondary"
+                                                        disabled={isLoading}
+                                                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                                                    >
+                                                        <X className="w-4 h-4 mr-2" />
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        onClick={handleSave}
+                                                        variant="secondary"
+                                                        disabled={isLoading}
+                                                        className="bg-white/90 hover:bg-white text-purple-600 border-0"
+                                                    >
+                                                        {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                        {isLoading ? "Saving..." : "Save Changes"}
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
+                            )
+                        }
 
-                        {/* Edit/Save/Cancel buttons */}
-                        {activeTab === "personal" && (
-                            <div className="flex gap-2">
-                                {!isEditing ? (
-                                    <Button
-                                        onClick={handleEdit}
-                                        variant="secondary"
-                                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                                    >
-                                        <Edit className="w-4 h-4 mr-2" />
-                                        Edit Profile
-                                    </Button>
-                                ) : (
-                                    <>
-                                        <Button
-                                            onClick={handleCancel}
-                                            variant="secondary"
-                                            disabled={isLoading}
-                                            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                                        >
-                                            <X className="w-4 h-4 mr-2" />
-                                            Cancel
-                                        </Button>
-                                        <Button
-                                            onClick={handleSave}
-                                            variant="secondary"
-                                            disabled={isLoading}
-                                            className="bg-white/90 hover:bg-white text-purple-600 border-0"
-                                        >
-                                            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                            {isLoading ? "Saving..." : "Save Changes"}
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -248,7 +255,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-purple-200 focus:border-purple-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.firstName}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.firstName ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -266,7 +273,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-purple-200 focus:border-purple-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.lastName}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.lastName ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -285,7 +292,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-blue-200 focus:border-blue-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.email}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.email ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -293,7 +300,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <div className="space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Phone className="w-4 h-4 text-green-500" />
-                                        Phone
+                                        Phone Number (Optional)
                                     </Label>
                                     {isEditing ? (
                                         <Input
@@ -304,7 +311,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-green-200 focus:border-green-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.phone}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.phone === null ? "-" : profileData.phone}</div>
                                     )}
                                 </div>
 
@@ -322,7 +329,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             className="border-red-200 focus:border-red-500"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.username}</div>
+                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.username ?? "-"}</div>
                                     )}
                                 </div>
 
@@ -346,7 +353,11 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                                 year: "numeric",
                                                 month: "long",
                                                 day: "numeric",
-                                            })}
+                                            }) === null ? new Date(profileData.birthday).toLocaleDateString("en-US", {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            }) : "-"}
                                         </div>
                                     )}
                                 </div>
@@ -364,7 +375,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                         <Button variant="outline" onClick={onClose} disabled={isLoading}>
                             Close
                         </Button>
-                        
+
                     </div>
                 </div>
             </div>

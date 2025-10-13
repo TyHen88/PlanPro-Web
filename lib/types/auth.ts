@@ -76,9 +76,13 @@ export interface SendOtpRequest {
 export interface ResetPasswordRequest {
     session_id: string;
     password: string;
-    phonenumber: string;
-    otp_code: string;
-    app_type?: string;
+    confirm_password: string;
+    // phonenumber: string;
+    // otp_code: string;
+    // app_type?: string;
+}
+export interface VerifyForgotPasswordRequest {
+    email: string;
 }
 
 export interface SendOptResponse {

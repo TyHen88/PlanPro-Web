@@ -59,13 +59,14 @@ function GeminiChat() {
 
   useEffect(scrollToBottom, [messages])
 
-  const handleSendMessage = async (userInput: string) => {
+  const handleSendMessage = async (userInput: string, images?: string[]) => {
     if (!userInput.trim()) return
 
     const newUserMessage: ChatMessage = {
       id: uuidv4(),
       role: "user",
       text: userInput,
+      images: images, // Store images in the message
     }
     setMessages((prevMessages) => [...prevMessages, newUserMessage])
     setIsLoading(true)
@@ -87,11 +88,23 @@ function GeminiChat() {
           message: userInput,
           history: apiHistory,
           sessionId: sessionId,
+          images: images,
         }),
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
+        // Check if response is HTML (404 page) instead of JSON
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('text/html')) {
+          throw new Error(`API endpoint not found (${response.status}). Please check if the server is running.`)
+        }
+
+        let errorData
+        try {
+          errorData = await response.json()
+        } catch (parseError) {
+          throw new Error(`API request failed with status ${response.status}`)
+        }
         throw new Error(errorData.error || "API request failed")
       }
 
@@ -119,12 +132,20 @@ function GeminiChat() {
       }
     } catch (error: unknown) {
       console.error("Failed to send message:", error)
-      const errorMessage: ChatMessage = {
+      let errorMessage = "Could not connect to the AI."
+
+      if (error instanceof Error) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
+
+      const errorMessageObj: ChatMessage = {
         id: uuidv4(),
         role: "system",
-        text: `Error: ${error instanceof Error ? error.message : "Could not connect to the AI."}`,
+        text: `Error: ${errorMessage}`,
       }
-      setMessages((prevMessages) => [...prevMessages, errorMessage])
+      setMessages((prevMessages) => [...prevMessages, errorMessageObj])
     } finally {
       setIsLoading(false)
     }

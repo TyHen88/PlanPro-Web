@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getSession } from "next-auth/react";
 
 export const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://planpro-dev.up.railway.app/',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://planpro-dev.up.railway.app/' || 'http://localhost:8080/',
 });
 
 http.interceptors.request.use(async (request) => {

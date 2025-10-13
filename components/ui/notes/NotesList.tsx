@@ -94,6 +94,8 @@ const NotesList = () => {
   const [mounted, setMounted] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [isCalendarEvent, setIsCalendarEvent] = useState(false)
+  const [closeNote, setCloseNote] = useState(false)
+  const [editNote, setEditNote] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -190,11 +192,36 @@ const NotesList = () => {
 
   const handleAddNote = () => {
     setAddNote(true)
-    setSelectedNote(null)
+    // setSelectedNote(null)
     setEditedContent("")
     setEditedTitle("")
     setSelectedColor(0)
     setIsCalendarEvent(false)
+  }
+
+  const handleCloseNote = () => {
+    setAddNote(false)
+    setEditNote(false)
+    setCloseNote(false)
+    setIsCalendarEvent(false)
+    setEditedContent("")
+    setEditedTitle("")
+    setSelectedColor(0)
+
+    if (notes.length > 0) {
+      setSelectedNote(notes[0])
+    }
+  }
+
+  const handleEditNote = (note: Note) => {
+    setEditNote(true)
+    setSelectedNote(note)
+    setAddNote(false)
+    setNoteToDelete(note.id)
+    setIsCalendarEvent(note.calendarEvent)
+    setEditedContent(note.content)
+    setEditedTitle(note.title)
+    setSelectedColor(noteColors.findIndex((c) => c.color === note.color) || 0)
   }
 
   const handleSaveNote = () => {
@@ -250,11 +277,9 @@ const NotesList = () => {
   return (
     <div className="bg-gray-50 custom-scrollbar overflow-auto">
       <div className=" mx-auto p-4">
-        {/* Header Section */}
         <div className="mb-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 rounded-xl"></div>
           <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white" style={{ zIndex: 1 }}>
-            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 translate-x-1/3 -translate-y-1/3"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 -translate-x-1/3 translate-y-1/3"></div>
 
@@ -286,7 +311,6 @@ const NotesList = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <h2 className="text-xl font-semibold text-gray-800 flex items-center">
@@ -317,7 +341,7 @@ const NotesList = () => {
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Notes Grid */}
-              <div className={`${selectedNote || addNote ? "w-full md:w-1/2 lg:w-2/3" : "w-full"}`}>
+              <div className={`${selectedNote || addNote || editNote ? "w-full md:w-1/2 lg:w-2/3" : "w-full"}`}>
                 {filteredNotes?.length > 0 ? (
                   <div className="note-grid">
                     {filteredNotes.map((note) => (
@@ -327,6 +351,7 @@ const NotesList = () => {
                         isSelected={Boolean(selectedNote && selectedNote.id === note.id)}
                         onSelect={handleNoteSelect}
                         onDelete={handleDeleteNote}
+                        onEdit={handleEditNote}
                       />
                     ))}
                   </div>
@@ -364,17 +389,12 @@ const NotesList = () => {
               </div>
 
               {/* Note Editor */}
-              {(selectedNote || addNote) && (
+              {(addNote || editNote) && (
                 <div className="w-full md:w-1/2 lg:w-1/3 bg-gray-50 rounded-xl p-6 border border-gray-200 animate-fadeIn">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-800">{addNote ? "Create New Note" : "Edit Note"}</h3>
                     <button
-                      onClick={() => {
-                        setAddNote(false)
-                        if (!selectedNote && notes.length > 0) {
-                          setSelectedNote(notes[0])
-                        }
-                      }}
+                      onClick={handleCloseNote}
                       className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200"
                     >
                       <X size={18} />
@@ -479,11 +499,12 @@ const NotesList = () => {
                     <div className="flex justify-end gap-3 pt-4">
                       <Button
                         variant="outline"
-                        onClick={() => {
-                          setAddNote(false)
-                          if (selectedNote) {
-                            setEditedContent(selectedNote.content)
-                            setEditedTitle(selectedNote.title)
+                        onClick={(e) => {
+                          handleCloseNote()
+                          e.stopPropagation()
+                          if (editNote) {
+                            setEditedContent(editedContent)
+                            setEditedTitle(editedTitle)
                           }
                         }}
                       >

@@ -30,6 +30,7 @@ import ProfileContrainer from "../profile/ProfileContrainer"
 import Image from "next/image"
 import profile from "@/public/asset/profile.jpg";
 import LogoutPopup from "./LogoutPopup"
+import { signOut, useSession } from "next-auth/react"
 
 interface SidebarProps {
     isOpen: boolean
@@ -228,13 +229,13 @@ const MENU_ITEMS = [
     //     color: "purple" as const,
     //     notification: undefined,
     // },
-    // {
-    //     href: Path.CHAT_PAGE,
-    //     icon: <MessageCircle size={20} />,
-    //     text: "We Talk",
-    //     color: "purple" as const,
-    //     notification: undefined,
-    // },
+    {
+        href: Path.CHAT_PAGE,
+        icon: <MessageCircle size={20} />,
+        text: "We Talk",
+        color: "purple" as const,
+        notification: undefined,
+    },
 ] as const
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
@@ -244,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
     const { isNavigating } = useNavigation()
     const [isLogoutPopupOpen, setIsLogoutPopupOpen] = useState(false)
     const { data, isError, isLoading } = useFetchProfile()
-
+    const session = useSession()
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [showProfile, setShowProfile] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
@@ -292,7 +293,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
 
     // Handle logout
     const handleLogout = useCallback(() => {
-        window.location.href = "/"
+        signOut()
+        router.push("/login")
     }, [])
 
     // Memoize profile data
