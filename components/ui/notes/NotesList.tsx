@@ -277,11 +277,9 @@ const NotesList = () => {
   return (
     <div className="bg-gray-50 custom-scrollbar overflow-auto">
       <div className=" mx-auto p-4">
-        {/* Header Section */}
         <div className="mb-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 rounded-xl"></div>
           <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white" style={{ zIndex: 1 }}>
-            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 translate-x-1/3 -translate-y-1/3"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 -translate-x-1/3 translate-y-1/3"></div>
 
@@ -313,7 +311,6 @@ const NotesList = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <h2 className="text-xl font-semibold text-gray-800 flex items-center">
