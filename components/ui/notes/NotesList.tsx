@@ -94,6 +94,8 @@ const NotesList = () => {
   const [mounted, setMounted] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [isCalendarEvent, setIsCalendarEvent] = useState(false)
+  const [closeNote, setCloseNote] = useState(false)
+  const [editNote, setEditNote] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -190,11 +192,36 @@ const NotesList = () => {
 
   const handleAddNote = () => {
     setAddNote(true)
-    setSelectedNote(null)
+    // setSelectedNote(null)
     setEditedContent("")
     setEditedTitle("")
     setSelectedColor(0)
     setIsCalendarEvent(false)
+  }
+
+  const handleCloseNote = () => {
+    setAddNote(false)
+    setEditNote(false)
+    setCloseNote(false)
+    setIsCalendarEvent(false)
+    setEditedContent("")
+    setEditedTitle("")
+    setSelectedColor(0)
+
+    if (notes.length > 0) {
+      setSelectedNote(notes[0])
+    }
+  }
+
+  const handleEditNote = (note: Note) => {
+    setEditNote(true)
+    setSelectedNote(note)
+    setAddNote(false)
+    setNoteToDelete(note.id)
+    setIsCalendarEvent(note.calendarEvent)
+    setEditedContent(note.content)
+    setEditedTitle(note.title)
+    setSelectedColor(noteColors.findIndex((c) => c.color === note.color) || 0)
   }
 
   const handleSaveNote = () => {
@@ -317,7 +344,7 @@ const NotesList = () => {
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Notes Grid */}
-              <div className={`${selectedNote || addNote ? "w-full md:w-1/2 lg:w-2/3" : "w-full"}`}>
+              <div className={`${selectedNote || addNote || editNote ? "w-full md:w-1/2 lg:w-2/3" : "w-full"}`}>
                 {filteredNotes?.length > 0 ? (
                   <div className="note-grid">
                     {filteredNotes.map((note) => (
@@ -327,6 +354,7 @@ const NotesList = () => {
                         isSelected={Boolean(selectedNote && selectedNote.id === note.id)}
                         onSelect={handleNoteSelect}
                         onDelete={handleDeleteNote}
+                        onEdit={handleEditNote}
                       />
                     ))}
                   </div>
@@ -364,17 +392,12 @@ const NotesList = () => {
               </div>
 
               {/* Note Editor */}
-              {(selectedNote || addNote) && (
+              {(addNote || editNote) && (
                 <div className="w-full md:w-1/2 lg:w-1/3 bg-gray-50 rounded-xl p-6 border border-gray-200 animate-fadeIn">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-800">{addNote ? "Create New Note" : "Edit Note"}</h3>
                     <button
-                      onClick={() => {
-                        setAddNote(false)
-                        if (!selectedNote && notes.length > 0) {
-                          setSelectedNote(notes[0])
-                        }
-                      }}
+                      onClick={handleCloseNote}
                       className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200"
                     >
                       <X size={18} />
@@ -479,11 +502,12 @@ const NotesList = () => {
                     <div className="flex justify-end gap-3 pt-4">
                       <Button
                         variant="outline"
-                        onClick={() => {
-                          setAddNote(false)
-                          if (selectedNote) {
-                            setEditedContent(selectedNote.content)
-                            setEditedTitle(selectedNote.title)
+                        onClick={(e) => {
+                          handleCloseNote()
+                          e.stopPropagation()
+                          if (editNote) {
+                            setEditedContent(editedContent)
+                            setEditedTitle(editedTitle)
                           }
                         }}
                       >
