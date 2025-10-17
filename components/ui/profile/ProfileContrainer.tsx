@@ -14,6 +14,7 @@ import toast from "react-hot-toast"
 import { useQueryClient } from "@tanstack/react-query"
 import SettingTap from "@/components/ui/profile/SettingTap"
 import TelegramHistory from "./TelegramHistory"
+import SecurityTap from "./SecurityTap"
 
 type Props = {
     profile_data: any
@@ -45,6 +46,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
         { id: "personal", label: "Personal", icon: User },
         { id: "telegram", label: "Telegram", icon: Mail },
         { id: "history", label: "History", icon: History },
+        { id: "security", label: "Security", icon: Shield },
     ]
 
     const handleEdit = () => {
@@ -125,6 +127,7 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
             setFileImage(file)
         }
     }
+    console.log("profileData", profile_data.auth_provider)
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
@@ -220,10 +223,10 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    disabled={tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history"}
+                                    disabled={tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history" && tab.id !== "security"}
                                     className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors relative 
                     ${activeTab === tab.id ? "text-teal-600" : "text-gray-500 hover:text-gray-700"}
-                    ${tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history" ? "opacity-50 cursor-not-allowed" : ""}
+                    ${tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history" && tab.id !== "security" ? "opacity-50 cursor-not-allowed" : ""}
                   `}
                                 >
                                     <Icon className="w-4 h-4" />
@@ -369,6 +372,9 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                     )}
                     {activeTab === "history" && (
                         <TelegramHistory />
+                    )}
+                    {activeTab === "security" && (
+                        <SecurityTap data={profile_data} />
                     )}
 
                     <div className="mt-8 flex justify-end gap-3">

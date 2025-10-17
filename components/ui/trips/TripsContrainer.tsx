@@ -113,7 +113,7 @@ const StatCard = ({
 
 // Main Trip Component
 const TripPage = () => {
-  const { data: trips = [] , isLoading, error, refetch } = useFetchTrips()
+  const { data: trips = [], isLoading, error, refetch } = useFetchTrips()
   const queryClient = useQueryClient()
   // State
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null)
@@ -215,7 +215,7 @@ const TripPage = () => {
   const filteredTrips = useMemo(() => {
     // Ensure trips is an array before filtering
     const tripsArray = Array.isArray(trips) ? trips : [];
-    
+
     return tripsArray.filter((trip: Trip) => {
       const matchesSearch =
         trip?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -276,7 +276,7 @@ const TripPage = () => {
         {/* Header Section */}
         <div className="mb-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 rounded-xl"></div>
-          <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white" style={{zIndex: 1}}>
+          <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white" style={{ zIndex: 1 }}>
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 translate-x-1/3 -translate-y-1/3"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 -translate-x-1/3 translate-y-1/3"></div>
@@ -367,7 +367,7 @@ const TripPage = () => {
                 disabled={createMutation.isPending}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-blue-500 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-500 group-hover:to-blue-600 transition-all duration-300"></div>
-                <span className="relative z-10 flex items-center justify-center text-white">
+                <span className="relative z-1 flex items-center justify-center text-white">
                   <Plus size={16} className="mr-1" />
                   {createMutation.isPending ? "Creating..." : "New Trip"}
                 </span>
@@ -395,7 +395,7 @@ const TripPage = () => {
                 </p>
                 <Button onClick={handleAddTrip} className="relative group overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-blue-500 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-500 group-hover:to-blue-600 transition-all duration-300"></div>
-                  <span className="relative z-10 flex items-center justify-center text-white">
+                  <span className="relative z-1 flex items-center justify-center text-white">
                     <Plus size={16} className="mr-1" />
                     Plan your first trip
                   </span>

@@ -97,3 +97,12 @@ export interface VerifyOtpRequest {
     region_cd: string;
     app_type?: string;
 }
+export interface SetUpPasswordRequest {
+    new_password: string;
+    confirm_password: string;
+}
+export interface UpdatePasswordRequest {
+    old_password: string;
+    new_password: string;
+    confirm_password: string;
+}
