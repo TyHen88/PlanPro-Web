@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
 import {
     Dialog,
     DialogBackdrop,
@@ -8,29 +7,30 @@ import {
     TransitionChild
 } from "@headlessui/react"
 import { Sparkles } from "lucide-react"
+import { useState } from "react"
 import {
+    AIAssistantProvider,
+    ChatContainer,
+    ChatHeader,
     ChatInput,
     ChatMessage,
+    QuickAction,
     QuickActions,
-    ChatHeader,
-    ChatContainer,
-    AIAssistantProvider,
-    useAIAssistant,
-    QuickAction
+    useAIAssistant
 } from "./index"
-import ChatMarkdown from "./ChatMarkdown"
-import { AIResponseFormatter } from "./AIResponseFormatter"
 
 type Props = {
     open: boolean
     setOpen: (open: boolean) => void
+    typewriterEnabled?: boolean
+    typewriterSpeed?: number
 }
 
 
 
-function ChatDrawerContent({ open, setOpen }: Props) {
-    const [messages, setMessages] = useState<{ text: string; suggestions: string[]; from: "ai" | "user" | "system"; timestamp?: number; isLoading?: boolean }[]>([
-        { text: "Hello! I'm your AI assistant. How can I help you today?", suggestions: [], from: "ai", timestamp: Date.now() }
+function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 15 }: Props) {
+    const [messages, setMessages] = useState<{ text: string; suggestions: string[]; from: "ai" | "user" | "system"; timestamp?: number; isLoading?: boolean; hasBeenTypewritten?: boolean }[]>([
+        { text: "Hello! I'm your AI assistant. How can I help you today?", suggestions: [], from: "ai", timestamp: Date.now(), hasBeenTypewritten: true }
     ])
     const [isLoading, setIsLoading] = useState(false)
     const { processMessage } = useAIAssistant()
@@ -44,7 +44,8 @@ function ChatDrawerContent({ open, setOpen }: Props) {
             text: message,
             suggestions: [],
             from: "user" as const,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            hasBeenTypewritten: true
         }
         setMessages(prev => [...prev, userMessage])
         setIsLoading(true)
@@ -74,7 +75,8 @@ function ChatDrawerContent({ open, setOpen }: Props) {
                 text: responseText,
                 suggestions: response.data?.suggestions || [],
                 from: "ai" as const,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                hasBeenTypewritten: false
             }
             setMessages(prev => [...prev, aiMessage])
         } catch (error) {
@@ -84,7 +86,8 @@ function ChatDrawerContent({ open, setOpen }: Props) {
                 text: "Sorry, I encountered an error. Please try again.",
                 suggestions: [],
                 from: "ai" as const,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                hasBeenTypewritten: false
             }
             setMessages(prev => [...prev, errorMessage])
         } finally {
@@ -95,6 +98,13 @@ function ChatDrawerContent({ open, setOpen }: Props) {
     // Handle quick action clicks
     const handleQuickAction = (action: QuickAction) => {
         handleSend(action.generateMessage?.() || "")
+    }
+
+    // Handle typewriter completion
+    const handleTypewriterComplete = (messageIndex: number) => {
+        setMessages(prev => prev.map((msg, idx) =>
+            idx === messageIndex ? { ...msg, hasBeenTypewritten: true } : msg
+        ))
     }
 
     return (
@@ -138,38 +148,16 @@ function ChatDrawerContent({ open, setOpen }: Props) {
                                     <div className="relative flex-1 flex flex-col justify-between min-h-0">
                                         <ChatContainer className="mt-6">
                                             {messages.map((msg, idx) => (
-                                                <div key={idx} className={`flex w-full ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
-                                                    <div className="max-w-[90%]">
-                                                        <div
-                                                            className={
-                                                                (msg.from === "user"
-                                                                    ? "bg-blue-500 text-white ml-12 rounded-br-2xl rounded-tl-2xl rounded-bl-md"
-                                                                    : "bg-gray-100 text-gray-900 mr-12 rounded-bl-2xl rounded-tr-2xl rounded-br-md"
-                                                                ) +
-                                                                " px-4 py-2 text-sm inline-block shadow-md break-words"
-                                                            }
-                                                            style={{
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                                alignSelf: msg.from === "user" ? "flex-end" : "flex-start"
-                                                            }}
-                                                        >
-                                                            {msg.from === "ai" ? (
-                                                                <AIResponseFormatter content={msg.text || ""} />
-                                                            ) : (
-                                                                msg.text
-                                                            )}
-                                                        </div>
-                                                        {msg.timestamp && (
-                                                            <div className={`text-xs text-gray-500 mt-1 ${msg.from === "user" ? "text-right" : "text-left"}`}>
-                                                                {new Date(msg.timestamp).toLocaleTimeString([], {
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit'
-                                                                })}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
+                                                <ChatMessage
+                                                    key={idx}
+                                                    text={msg.text}
+                                                    from={msg.from}
+                                                    timestamp={msg.timestamp}
+                                                    isLoading={msg.isLoading}
+                                                    typewriterEnabled={msg.from === "ai" && typewriterEnabled && !msg.hasBeenTypewritten}
+                                                    typewriterSpeed={typewriterSpeed}
+                                                    onTypewriterComplete={() => handleTypewriterComplete(idx)}
+                                                />
                                             ))}
                                             {isLoading && (
                                                 <div className="flex w-full justify-start">
@@ -223,10 +211,15 @@ function ChatDrawerContent({ open, setOpen }: Props) {
     )
 }
 
-export default function MainChatDrawer({ open, setOpen }: Props) {
+export default function MainChatDrawer({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 15 }: Props) {
     return (
         <AIAssistantProvider>
-            <ChatDrawerContent open={open} setOpen={setOpen} />
+            <ChatDrawerContent
+                open={open}
+                setOpen={setOpen}
+                typewriterEnabled={typewriterEnabled}
+                typewriterSpeed={typewriterSpeed}
+            />
         </AIAssistantProvider>
     )
 }

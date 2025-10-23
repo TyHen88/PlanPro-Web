@@ -14,7 +14,6 @@ import NoteCard from "./NoteCard"
 import { Switch } from "@/components/shared/ui/swtich"
 import { formatDateToYYYYMMDD } from "@/utils/dateformat"
 
-
 // Note color options with enhanced styling
 const noteColors = [
   { color: "bg-blue-400", ring: "ring-blue-500", name: "Blue", gradient: "from-blue-400 to-blue-300" },
@@ -25,9 +24,6 @@ const noteColors = [
   { color: "bg-purple-400", ring: "ring-purple-500", name: "Purple", gradient: "from-purple-400 to-purple-300" },
   { color: "bg-pink-400", ring: "ring-pink-500", name: "Pink", gradient: "from-pink-400 to-pink-300" },
 ]
-
-// Define a Note type matching notes_data
-
 
 // Confirmation Dialog Component
 export const ConfirmationDialog = ({ show, onConfirm, onClose }: { show: boolean; onConfirm: () => void; onClose: () => void }) => {
@@ -76,7 +72,6 @@ export const ConfirmationDialog = ({ show, onConfirm, onClose }: { show: boolean
   )
 }
 
-
 // Main Notes List Component
 const NotesList = () => {
   const queryClient = useQueryClient()
@@ -97,6 +92,11 @@ const NotesList = () => {
   const [closeNote, setCloseNote] = useState(false)
   const [editNote, setEditNote] = useState(false)
 
+  // Require field state
+  const [titleTouched, setTitleTouched] = useState(false)
+  const [contentTouched, setContentTouched] = useState(false)
+  const [formSubmitted, setFormSubmitted] = useState(false)
+
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -108,8 +108,6 @@ const NotesList = () => {
       setIsCalendarEvent(notesData[0].isCalendarEvent)
     }
   }, [notesData, selectedNote])
-
-  console.log("isCalendarEvent", isCalendarEvent)
 
   useEffect(() => {
     if (selectedNote) {
@@ -160,7 +158,6 @@ const NotesList = () => {
     }
   })
 
-
   //mutation delete note
   const { mutate: deleteNote } = useMutation({
     mutationFn: (id: any) => NoteService.deleteNote(id),
@@ -176,7 +173,6 @@ const NotesList = () => {
     }
   })
 
-
   const handleDeleteNote = () => {
     deleteNote(noteToDelete)
     setNoteToDelete(null)
@@ -189,7 +185,6 @@ const NotesList = () => {
     setIsCalendarEvent(note.calendarEvent)
   }
 
-
   const handleAddNote = () => {
     setAddNote(true)
     // setSelectedNote(null)
@@ -197,6 +192,9 @@ const NotesList = () => {
     setEditedTitle("")
     setSelectedColor(0)
     setIsCalendarEvent(false)
+    setFormSubmitted(false)
+    setTitleTouched(false)
+    setContentTouched(false)
   }
 
   const handleCloseNote = () => {
@@ -207,6 +205,9 @@ const NotesList = () => {
     setEditedContent("")
     setEditedTitle("")
     setSelectedColor(0)
+    setFormSubmitted(false)
+    setTitleTouched(false)
+    setContentTouched(false)
 
     if (notes.length > 0) {
       setSelectedNote(notes[0])
@@ -222,9 +223,27 @@ const NotesList = () => {
     setEditedContent(note.content)
     setEditedTitle(note.title)
     setSelectedColor(noteColors.findIndex((c) => c.color === note.color) || 0)
+    setFormSubmitted(false)
+    setTitleTouched(false)
+    setContentTouched(false)
+  }
+
+  const validateFields = () => {
+    // Both fields are required; must not be blank/empty string.
+    const titleValid = editedTitle.trim().length > 0
+    const contentValid = editedContent.trim().length > 0
+    return { titleValid, contentValid }
   }
 
   const handleSaveNote = () => {
+    setFormSubmitted(true)
+    setTitleTouched(true)
+    setContentTouched(true)
+    const { titleValid, contentValid } = validateFields()
+    if (!titleValid || !contentValid) {
+      // Early return. Toast could be shown as extra, but message is shown on form.
+      return
+    }
     if (addNote) {
       const newNote = {
         id: Date.now(), // Temporary ID
@@ -257,13 +276,11 @@ const NotesList = () => {
     }
   }
 
-
   const filteredNotes = notes.filter(
     (note) =>
       note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       note.content?.toLowerCase().includes(searchQuery.toLowerCase())
   )
-
 
   if (!mounted) return null
   if (isLoading) return (
@@ -400,33 +417,49 @@ const NotesList = () => {
                       <X size={18} />
                     </button>
                   </div>
-
                   <div className="space-y-4">
                     <div>
                       <label htmlFor="note-title" className="block text-sm font-medium text-gray-700 mb-1">
-                        Title
+                        Title <span className="text-red-500">*</span>
                       </label>
                       <Input
                         id="note-title"
                         value={editedTitle}
-                        onChange={(e) => setEditedTitle(e.target.value)}
+                        onChange={(e) => {
+                          setEditedTitle(e.target.value)
+                          setTitleTouched(true)
+                        }}
                         placeholder="Note title"
-                        className="w-full"
+                        className={`w-full ${formSubmitted && editedTitle.trim() === "" ? "border-red-500 focus:ring-red-500" : ""}`}
+                        required
+                        onBlur={() => setTitleTouched(true)}
+                      // `required` is good for accessibility/HTML validation, but we handle error showing below
                       />
+                      {(formSubmitted || titleTouched) && editedTitle.trim() === "" && (
+                        <p className="text-xs text-red-600 mt-1">Title is required.</p>
+                      )}
                     </div>
 
                     <div>
                       <label htmlFor="note-content" className="block text-sm font-medium text-gray-700 mb-1">
-                        Content
+                        Content <span className="text-red-500">*</span>
                       </label>
                       <textarea
                         ref={textareaRef}
                         id="note-content"
                         value={editedContent}
-                        onChange={(e) => setEditedContent(e.target.value)}
+                        onChange={(e) => {
+                          setEditedContent(e.target.value)
+                          setContentTouched(true)
+                        }}
                         placeholder="Write your note here..."
-                        className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar"
+                        className={`w-full h-40 p-3 border ${formSubmitted && editedContent.trim() === "" ? "border-red-500 focus:ring-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar`}
+                        required
+                        onBlur={() => setContentTouched(true)}
                       />
+                      {(formSubmitted || contentTouched) && editedContent.trim() === "" && (
+                        <p className="text-xs text-red-600 mt-1">Content is required.</p>
+                      )}
                     </div>
 
                     <div>
@@ -436,12 +469,10 @@ const NotesList = () => {
                           <button
                             key={color.color}
                             type="button"
-                            className={`relative h-8 w-8 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-110 ${selectedColor === idx ? "ring-2 ring-offset-2 " + color.ring : ""
-                              }`}
+                            className={`relative h-8 w-8 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-200 hover:scale-110 ${selectedColor === idx ? "ring-2 ring-offset-2 " + color.ring : ""}`}
                             onClick={() => setSelectedColor(idx)}
                             style={{
-                              background: `linear-gradient(135deg, var(--${color.color.split("-")[1]}-400), var(--${color.color.split("-")[1]
-                                }-300))`,
+                              background: `linear-gradient(135deg, var(--${color.color.split("-")[1]}-400), var(--${color.color.split("-")[1]}-300))`,
                             }}
                           >
                             {selectedColor === idx && <Check className="h-4 w-4 text-white" />}
@@ -450,7 +481,6 @@ const NotesList = () => {
                       </div>
                     </div>
                     {/* Add to Calendar */}
-
                     <div className="md:col-span-2 flex flex-col gap-2 bg-gradient-to-br from-blue-50 via-purple-50 to-blue-100 rounded-xl p-4 shadow-inner border border-blue-100">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -491,10 +521,7 @@ const NotesList = () => {
                           </span>
                         </div>
                       )}
-
                     </div>
-
-
 
                     <div className="flex justify-end gap-3 pt-4">
                       <Button
@@ -532,7 +559,6 @@ const NotesList = () => {
         onConfirm={handleDeleteNote}
         onClose={() => setShowDelete(false)}
       />
-
 
     </div>
   )

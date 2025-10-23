@@ -1,6 +1,8 @@
 "use client"
 
 import { ReactNode } from "react"
+import TypewriterText from "./TypewriterText"
+import { AIResponseFormatter } from "./AIResponseFormatter"
 
 interface ChatMessageProps {
     text: string
@@ -9,6 +11,9 @@ interface ChatMessageProps {
     isLoading?: boolean
     children?: ReactNode
     className?: string
+    typewriterEnabled?: boolean
+    typewriterSpeed?: number
+    onTypewriterComplete?: () => void
 }
 
 export default function ChatMessage({
@@ -17,7 +22,10 @@ export default function ChatMessage({
     timestamp,
     isLoading = false,
     children,
-    className = ""
+    className = "",
+    typewriterEnabled = true,
+    typewriterSpeed = 30,
+    onTypewriterComplete
 }: ChatMessageProps) {
     const formatTime = (timestamp?: number) => {
         if (!timestamp) return ""
@@ -58,6 +66,16 @@ export default function ChatMessage({
                             </div>
                             <span className="ml-2">AI is thinking...</span>
                         </div>
+                    ) : from === "ai" && typewriterEnabled ? (
+                        <TypewriterText
+                            text={text}
+                            speed={typewriterSpeed}
+                            cursor={true}
+                            cursorChar="|"
+                            onComplete={onTypewriterComplete}
+                        />
+                    ) : from === "ai" ? (
+                        <AIResponseFormatter content={text} />
                     ) : (
                         text
                     )}
