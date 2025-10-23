@@ -1,36 +1,28 @@
 import { useFetchProfile } from "@/lib/hooks/useFetchProfile"
 import { useNavigation } from "@/lib/hooks/useNavigation"
+import profile from "@/public/asset/profile.jpg"
 import { Path } from "@/utils/enum"
 import {
     AlertCircle,
-    Bot,
     Calendar1,
-    ChartAreaIcon,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    HelpCircle,
-    ListTodo,
     LogOut,
     MessageCircle,
-    MessageCircleDashed,
-    MessageCircleDashedIcon,
     Notebook,
-    Plane,
     Sparkles,
-    Star,
     UserIcon,
-    Wallet,
+    Wallet
 } from "lucide-react"
+import { signOut, useSession } from "next-auth/react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import type React from "react"
-import { useState, useEffect, useRef, useMemo, useCallback, memo } from "react"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import ProfileContrainer from "../profile/ProfileContrainer"
-import Image from "next/image"
-import profile from "@/public/asset/profile.jpg";
 import LogoutPopup from "./LogoutPopup"
-import { signOut, useSession } from "next-auth/react"
 
 interface SidebarProps {
     isOpen: boolean
@@ -215,13 +207,13 @@ const MENU_ITEMS = [
         color: "teal" as const,
         notification: 3,
     },
-    {
-        href: Path.CHAT,
-        icon: <Bot size={20} />,
-        text: "Chat AI",
-        color: "purple" as const,
-        notification: undefined,
-    },
+    // {
+    //     href: Path.CHAT,
+    //     icon: <Bot size={20} />,
+    //     text: "Chat AI",
+    //     color: "purple" as const,
+    //     notification: undefined,
+    // },
     // {
     //     href: Path.TELEGRAM,
     //     icon: <MessageCircleDashed size={20} />,

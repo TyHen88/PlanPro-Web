@@ -1,7 +1,7 @@
 // RootLayout.tsx
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import MainChatDrawer from '../chatAi-v2/MainChatDrawers';
+import MainChatDrawer from '../chatAiAssistant/MainChatDrawers';
 
 interface RootLayoutProps {
     children: React.ReactNode;

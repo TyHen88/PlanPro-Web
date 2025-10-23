@@ -1,0 +1,15 @@
+export { default as ChatInput } from './ChatInput'
+export { default as ChatMessage } from './ChatMessage'
+export { default as QuickActions } from './QuickActions'
+export { default as ChatHeader } from './ChatHeader'
+export { default as ChatContainer } from './ChatContainer'
+export { default as ChatMarkdown } from './ChatMarkdown'
+export { default as MainChatDrawers } from './MainChatDrawers'
+export { default as IntegrationTest } from './IntegrationTest'
+export { AIAssistantProvider, useAIAssistant } from './AIAssistantProvider'
+export { AIResponseFormatter } from './AIResponseFormatter'
+export type { QuickAction } from './QuickActions'
+
+// Export utilities
+export * from './utils/errorHandler'
+export * from './utils/testUtils'
