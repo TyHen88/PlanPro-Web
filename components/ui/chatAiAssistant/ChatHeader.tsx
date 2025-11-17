@@ -28,16 +28,16 @@ export default function ChatHeader({
                     </div>
                 )}
                 <div className="flex-1">
-                    <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+                    <h2 className="text-base font-semibold text-foreground">{title}</h2>
                     {subtitle && (
-                        <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>
                     )}
                 </div>
                 {showCloseButton && onClose && (
                     <button
                         type="button"
                         onClick={onClose}
-                        className="relative rounded-md text-gray-400 hover:text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                        className="relative rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-colors"
                     >
                         <span className="absolute -inset-2.5" />
                         <span className="sr-only">Close panel</span>

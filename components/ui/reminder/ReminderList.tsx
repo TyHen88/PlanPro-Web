@@ -24,7 +24,7 @@ import {
 import ReminderService from "@/service/reminder.service"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useFetchReminder from "@/lib/hooks/useFetchReminder"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import LoadingSpinner from "@/components/shared/LoadingSpinner"
 import { useFetchTelegram } from "@/lib/hooks/useFetchTelegram"
 
@@ -252,7 +252,7 @@ export default function ReminderPage() {
   }
 
   return (
-    <div className="bg-gray-50 h-screen">
+    <div className="bg-background h-screen">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <LoadingSpinner size="lg" />
@@ -261,21 +261,21 @@ export default function ReminderPage() {
         <>
 
           {/* Header */}
-          <div className="bg-white border-b">
+          <div className="bg-card border-b border-border">
             <div className="relative">
               {/* Gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-70"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-50/50 dark:from-green-950/30 to-blue-50/50 dark:to-blue-950/30 opacity-70"></div>
 
               <div className="relative container mx-auto px-4 py-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="mb-4 md:mb-0">
-                    <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                      <AlertCircle className="h-6 w-6 mr-2 text-green-500" />
-                      <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-bold text-foreground flex items-center">
+                      <AlertCircle className="h-6 w-6 mr-2 text-green-600 dark:text-green-400" />
+                      <span className="bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">
                         Reminders
                       </span>
                     </h1>
-                    <p className="text-gray-600 mt-1">Never miss important dates and deadlines</p>
+                    <p className="text-muted-foreground mt-1">Never miss important dates and deadlines</p>
                   </div>
 
                   {isConnectedActive ? (
@@ -386,11 +386,11 @@ export default function ReminderPage() {
                 <DialogTitle>Delete Reminder</DialogTitle>
               </DialogHeader>
               <div className="py-4">
-                <p className="text-gray-700">
+                <p className="text-foreground">
                   Are you sure you want to delete this reminder?
                   <span className="font-medium block mt-2">"{currentReminder?.title}"</span>
                 </p>
-                <p className="text-gray-500 text-sm mt-2">This action cannot be undone.</p>
+                <p className="text-muted-foreground text-sm mt-2">This action cannot be undone.</p>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>

@@ -6,7 +6,7 @@ import { MessageCircle, Check, Zap, User, Shield, Loader2, Send, X } from 'lucid
 import { useMutation } from '@tanstack/react-query'
 import TelegramService from '@/service/telegram.service'
 import { useQueryClient } from '@tanstack/react-query'
-import { toast } from 'react-hot-toast'
+import { toast } from 'sonner'
 import { useFetchTelegram } from '@/lib/hooks/useFetchTelegram'
 
 type Props = {

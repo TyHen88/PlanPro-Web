@@ -8,7 +8,7 @@ import { signIn, useSession } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useReducer, useState } from "react"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import { initiateGoogleLogin } from "@/utils/googleOAuth"
 export default function LoginPage() {
     const router = useRouter()
@@ -94,11 +94,11 @@ export default function LoginPage() {
     if (!mounted) return null
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-teal-50">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50/50 dark:from-blue-950/20 via-background to-teal-50/50 dark:to-teal-950/20">
             {/* Decorative elements */}
-            <div className="fixed top-0 left-0 w-64 h-64 bg-blue-500 rounded-full opacity-10 -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
-            <div className="fixed top-1/3 right-0 w-96 h-96 bg-teal-400 rounded-full opacity-10 translate-x-1/2 blur-3xl"></div>
-            <div className="fixed bottom-0 left-1/3 w-80 h-80 bg-yellow-400 rounded-full opacity-10 translate-y-1/2 blur-3xl"></div>
+            <div className="fixed top-0 left-0 w-64 h-64 bg-blue-500 rounded-full opacity-10 dark:opacity-20 -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+            <div className="fixed top-1/3 right-0 w-96 h-96 bg-teal-400 rounded-full opacity-10 dark:opacity-20 translate-x-1/2 blur-3xl"></div>
+            <div className="fixed bottom-0 left-1/3 w-80 h-80 bg-yellow-400 rounded-full opacity-10 dark:opacity-20 translate-y-1/2 blur-3xl"></div>
 
             <header className="container mx-auto px-4 py-6 relative z-10">
                 <Link href="/" className="flex items-center gap-2 group">
@@ -118,12 +118,12 @@ export default function LoginPage() {
                         {/* Card glow effect */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-teal-400 to-yellow-400 rounded-2xl opacity-50 blur-lg"></div>
 
-                        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-white relative z-10">
+                        <div className="bg-card/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-border relative z-10">
                             <div className="text-center mb-8">
                                 <div className="flex justify-center mb-4">
                                     <div className="relative">
                                         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 animate-pulse blur-md"></div>
-                                        <div className="relative bg-white rounded-full p-3">
+                                        <div className="relative bg-card rounded-full p-3">
                                             <Sparkles className="h-8 w-8 text-blue-500" />
                                         </div>
                                     </div>
@@ -131,13 +131,13 @@ export default function LoginPage() {
                                 <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent">
                                     Welcome back
                                 </h1>
-                                <p className="text-gray-600">Log in to your PlanPro account</p>
+                                <p className="text-muted-foreground">Log in to your PlanPro account</p>
                             </div>
 
                             {error && (
-                                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm flex items-start">
-                                    <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                                        <span className="text-red-600 text-xs">!</span>
+                                <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg text-sm flex items-start">
+                                    <div className="w-5 h-5 rounded-full bg-destructive/20 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <span className="text-destructive text-xs">!</span>
                                     </div>
                                     <p>{error}</p>
                                 </div>
@@ -145,7 +145,7 @@ export default function LoginPage() {
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="email" className="block text-sm font-medium text-foreground">
                                         Username
                                     </label>
                                     <div className="relative group">
@@ -157,7 +157,7 @@ export default function LoginPage() {
                                             name="user_name"
                                             type="text"
                                             placeholder="john_doe"
-                                            className="pl-10 border-transparent bg-white relative z-10"
+                                            className="pl-10 border-transparent bg-background relative z-10"
                                             value={loginRequest.user_name}
                                             onChange={handleChange}
                                             required
@@ -167,12 +167,12 @@ export default function LoginPage() {
 
                                 <div className="space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                        <label htmlFor="password" className="block text-sm font-medium text-foreground">
                                             Password
                                         </label>
                                         <Link
                                             href="/forgot-password"
-                                            className="text-sm text-blue-500 hover:text-blue-600 transition-colors hover:underline"
+                                            className="text-sm text-primary hover:text-primary/80 transition-colors hover:underline"
                                         >
                                             Forgot password?
                                         </Link>
@@ -187,7 +187,7 @@ export default function LoginPage() {
                                             name="password"
                                             type={showPassword ? "text" : "password"}
                                             placeholder="••••••••"
-                                            className="pl-10 pr-10 border-transparent bg-white relative z-10"
+                                            className="pl-10 pr-10 border-transparent bg-background relative z-10"
                                             value={loginRequest.password}
                                             onChange={handleChange}
                                             required
@@ -199,9 +199,9 @@ export default function LoginPage() {
                                             onClick={() => setShowPassword(!showPassword)}
                                         >
                                             {showPassword ? (
-                                                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                                                <EyeOff className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                                             ) : (
-                                                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
+                                                <Eye className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                                             )}
                                         </button>
                                     </div>
@@ -248,10 +248,10 @@ export default function LoginPage() {
                             <div className="mt-8">
                                 <div className="relative">
                                     <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-gray-200"></div>
+                                        <div className="w-full border-t border-border"></div>
                                     </div>
                                     <div className="relative flex justify-center text-sm">
-                                        <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                                        <span className="px-2 bg-card text-muted-foreground">Or continue with</span>
                                     </div>
                                 </div>
 
@@ -259,9 +259,9 @@ export default function LoginPage() {
                                     <button
                                         type="button"
                                         onClick={initiateGoogleLogin}
-                                        className="w-full relative group overflow-hidden border border-gray-300 hover:border-gray-400 rounded-lg py-2.5 transition-all duration-300"
+                                        className="w-full relative group overflow-hidden border border-border hover:border-border/80 rounded-lg py-2.5 transition-all duration-300"
                                     >
-                                        <span className="relative z-10 flex items-center justify-center text-gray-700">
+                                        <span className="relative z-10 flex items-center justify-center text-foreground">
                                             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                                                 <path
                                                     fill="#4285F4"
@@ -287,11 +287,11 @@ export default function LoginPage() {
                             </div>
 
                             <div className="mt-8 text-center">
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Don't have an account?{" "}
                                     <Link
                                         href="/register"
-                                        className="font-medium text-blue-500 hover:text-blue-600 transition-colors hover:underline"
+                                        className="font-medium text-primary hover:text-primary/80 transition-colors hover:underline"
                                     >
                                         Sign up
                                     </Link>

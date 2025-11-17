@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Sparkles } from "lucide-react";
 import { Path } from "@/utils/enum";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function OAuth2Redirect() {
     const router = useRouter();

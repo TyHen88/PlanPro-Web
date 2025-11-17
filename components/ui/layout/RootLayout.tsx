@@ -1,6 +1,7 @@
 // RootLayout.tsx
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
+import { Header } from './Header';
 import MainChatDrawer from '../chatAiAssistant/MainChatDrawers';
 
 interface RootLayoutProps {
@@ -16,30 +17,22 @@ function RootLayout({ children }: RootLayoutProps) {
             {/* Sidebar */}
             <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-            {/* Main content area with navbar and children */}
+            {/* Main content area with header and children */}
             <div
-                className="flex flex-col transition-all duration-300 "
+                className="flex flex-col transition-all duration-300 bg-background"
                 style={{
-                    marginLeft: sidebarOpen ? '16rem' : '5rem',
-                    background: "white"
+                    marginLeft: sidebarOpen ? '16rem' : '4rem',
                 }}
             >
-                {/* Navbar */}
-                {/* <NavBar 
-                    toggleSidebar={() => setSidebarOpen(!sidebarOpen)} 
-                    isDarkMode={false} 
-                    currentTheme={{
-                        color: '',
-                        ring: '',
-                        name: '',
-                        gradient: ''
-                    }}
-                /> */}
+                {/* Header */}
+                <Header />
 
                 {/* Page content */}
-                <main className="flex-grow">
+                <main className="flex-grow overflow-auto">
                     {children}
                 </main>
+                {/* AI Chat Drawer */}
+                <MainChatDrawer open={aiDrawerOpen} setOpen={setAiDrawerOpen} />
             </div>
 
             {/* AI Chat Button - Floating */}
@@ -66,8 +59,7 @@ function RootLayout({ children }: RootLayoutProps) {
                 </div>
             </div>
 
-            {/* AI Chat Drawer */}
-            <MainChatDrawer open={aiDrawerOpen} setOpen={setAiDrawerOpen} />
+
         </div>
     );
 }

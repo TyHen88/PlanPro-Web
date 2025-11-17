@@ -25,9 +25,9 @@ const LogoutPopup: React.FC<LogoutPopupProps> = ({ open, onClose, onLogout }) =>
                     <DialogTitle className="text-center text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-fuchsia-500 to-purple-600 bg-clip-text text-transparent tracking-wide">
                         Ready to Say Goodbye?
                     </DialogTitle>
-                    <p className="text-gray-500 text-base mt-3 text-center italic">
+                    <p className="text-muted-foreground text-base mt-3 text-center italic">
                         Logging out will end your current session.<br />
-                        <span className="text-blue-500 font-semibold">We'll miss you!</span>
+                        <span className="text-primary font-semibold">We'll miss you!</span>
                     </p>
                     <div className="flex flex-col gap-2 mt-6">
                         <Button
@@ -40,7 +40,7 @@ const LogoutPopup: React.FC<LogoutPopupProps> = ({ open, onClose, onLogout }) =>
                         <Button
                             onClick={onClose}
                             variant="secondary"
-                            className="w-full border border-blue-200 hover:bg-blue-50 text-blue-700 font-medium"
+                            className="w-full border border-primary/20 hover:bg-primary/10 text-primary font-medium"
                         >
                             <span role="img" aria-label="stay">🙈</span> Stay Logged In
                         </Button>

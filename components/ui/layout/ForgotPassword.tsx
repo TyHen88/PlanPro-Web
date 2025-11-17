@@ -8,7 +8,7 @@ import { Button } from "@/components/shared/ui/Button"
 import { Input } from "@/components/shared/ui/Input"
 import { authService } from "@/service/auth.service"
 import { useMutation } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import { useFetchAuthRefreshToken } from "@/lib/hooks/useFetchAuthRefreshToken"
 import { ResetPasswordRequest, VerifyForgotPasswordRequest } from "@/lib/types/auth"
 import { PasswordUtils } from "@/utils/PasswordUtils"
@@ -125,11 +125,11 @@ export default function ForgotPasswordPage() {
     if (!mounted) return null
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50 via-white to-teal-50">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-50/50 dark:from-green-950/20 via-background to-teal-50/50 dark:to-teal-950/20">
             {/* Decorative elements */}
-            <div className="fixed top-0 left-0 w-64 h-64 bg-green-400 rounded-full opacity-10 -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
-            <div className="fixed top-1/3 right-0 w-96 h-96 bg-teal-400 rounded-full opacity-10 translate-x-1/2 blur-3xl"></div>
-            <div className="fixed bottom-0 left-1/3 w-80 h-80 bg-blue-500 rounded-full opacity-10 translate-y-1/2 blur-3xl"></div>
+            <div className="fixed top-0 left-0 w-64 h-64 bg-green-400 rounded-full opacity-10 dark:opacity-20 -translate-x-1/2 -translate-y-1/2 blur-3xl"></div>
+            <div className="fixed top-1/3 right-0 w-96 h-96 bg-teal-400 rounded-full opacity-10 dark:opacity-20 translate-x-1/2 blur-3xl"></div>
+            <div className="fixed bottom-0 left-1/3 w-80 h-80 bg-blue-500 rounded-full opacity-10 dark:opacity-20 translate-y-1/2 blur-3xl"></div>
 
             <header className="container mx-auto px-4 py-6 relative z-10">
                 <Link href="/" className="flex items-center gap-2 group">
@@ -149,12 +149,12 @@ export default function ForgotPasswordPage() {
                         {/* Card glow effect */}
                         <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-teal-400 to-blue-500 rounded-2xl opacity-50 blur-lg"></div>
 
-                        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-white relative z-10">
+                        <div className="bg-card/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-border relative z-10">
                             <div className="text-center mb-8">
                                 <div className="flex justify-center mb-4">
                                     <div className="relative">
                                         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400 to-teal-400 animate-pulse blur-md"></div>
-                                        <div className="relative bg-white rounded-full p-3">
+                                        <div className="relative bg-card rounded-full p-3">
                                             <Sparkles className="h-8 w-8 text-green-500" />
                                         </div>
                                     </div>
@@ -164,15 +164,15 @@ export default function ForgotPasswordPage() {
                                         <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
                                             Verify your email
                                         </h1>
-                                        <p className="text-gray-600">We&apos;ll send you a link to verify your email</p>
+                                        <p className="text-muted-foreground">We&apos;ll send you a link to verify your email</p>
                                     </>
                                 )}
                             </div>
 
                             {error && (
-                                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm flex items-start">
-                                    <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                                        <span className="text-red-600 text-xs">!</span>
+                                <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg text-sm flex items-start">
+                                    <div className="w-5 h-5 rounded-full bg-destructive/20 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                                        <span className="text-destructive text-xs">!</span>
                                     </div>
                                     <p>{error}</p>
                                 </div>
@@ -180,10 +180,10 @@ export default function ForgotPasswordPage() {
 
                             {success && !showPasswordForm ? (
                                 <div className="space-y-6">
-                                    <div className="p-6 bg-green-50 border border-green-200 text-green-700 rounded-lg relative overflow-hidden">
+                                    <div className="p-6 bg-green-50/50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-lg relative overflow-hidden">
                                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-teal-400"></div>
                                         <div className="flex items-start">
-                                            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center mr-4 flex-shrink-0">
                                                 <Mail className="h-5 w-5 text-green-500" />
                                             </div>
                                             <div>
@@ -209,12 +209,12 @@ export default function ForgotPasswordPage() {
                                         <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">
                                             Set New Password
                                         </h2>
-                                        <p className="text-gray-600">Enter your new password below</p>
+                                        <p className="text-muted-foreground">Enter your new password below</p>
                                     </div>
 
                                     <div className="space-y-4">
                                         <div className="space-y-2">
-                                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="email" className="block text-sm font-medium text-foreground">
                                                 Email
                                             </label>
                                             <div className="relative flex items-center">
@@ -223,7 +223,7 @@ export default function ForgotPasswordPage() {
                                                     type="text"
                                                     value={authData?.data?.data?.email || ""}
                                                     readOnly
-                                                    className="w-full border border-gray-200 rounded-md px-3 py-2 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 cursor-not-allowed"
+                                                    className="w-full border border-input rounded-md px-3 py-2 bg-muted text-foreground focus:outline-none focus:ring-2 focus:ring-primary cursor-not-allowed"
                                                     tabIndex={-1}
                                                 />
                                                 {/* Success icon on the right */}
@@ -249,7 +249,7 @@ export default function ForgotPasswordPage() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="password" className="block text-sm font-medium text-foreground">
                                                 New Password
                                             </label>
                                             <div className="relative group">
@@ -258,14 +258,14 @@ export default function ForgotPasswordPage() {
                                                     id="password"
                                                     type={showPassword ? "text" : "password"}
                                                     placeholder="Enter new password"
-                                                    className="border-transparent bg-white relative z-10 pr-10"
+                                                    className="border-transparent bg-background relative z-10 pr-10"
                                                     required
                                                 />
                                                 <button
                                                     type="button"
                                                     tabIndex={-1}
                                                     onClick={() => setShowPassword((prev) => !prev)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-green-500 focus:outline-none"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-muted-foreground hover:text-primary focus:outline-none"
                                                     aria-label={showPassword ? "Hide password" : "Show password"}
                                                 >
                                                     {showPassword ? (
@@ -278,7 +278,7 @@ export default function ForgotPasswordPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="confirm_password" className="block text-sm font-medium text-foreground">
                                                 Confirm Password
                                             </label>
                                             <div className="relative group">
@@ -287,14 +287,14 @@ export default function ForgotPasswordPage() {
                                                     id="confirm_password"
                                                     type={showConfirmPassword ? "text" : "password"}
                                                     placeholder="Confirm new password"
-                                                    className="border-transparent bg-white relative z-10 pr-10"
+                                                    className="border-transparent bg-background relative z-10 pr-10"
                                                     required
                                                 />
                                                 <button
                                                     type="button"
                                                     tabIndex={-1}
                                                     onClick={() => setShowConfirmPassword((prev) => !prev)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-green-500 focus:outline-none"
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 z-20 text-muted-foreground hover:text-primary focus:outline-none"
                                                     aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                                                 >
                                                     {showConfirmPassword ? (
@@ -352,7 +352,7 @@ export default function ForgotPasswordPage() {
                                                 setSuccess(false)
                                                 setError("")
                                             }}
-                                            className="text-sm text-green-500 hover:text-green-600 transition-colors hover:underline"
+                                            className="text-sm text-primary hover:text-primary/80 transition-colors hover:underline"
                                         >
                                             Back to email verification
                                         </button>
@@ -361,7 +361,7 @@ export default function ForgotPasswordPage() {
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="space-y-2">
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                        <label htmlFor="email" className="block text-sm font-medium text-foreground">
                                             Email
                                         </label>
                                         <div className="relative group">
@@ -373,7 +373,7 @@ export default function ForgotPasswordPage() {
                                                 id="email"
                                                 type="email"
                                                 placeholder="you@example.com"
-                                                className="pl-10 border-transparent bg-white relative z-10"
+                                                className="pl-10 border-transparent bg-background relative z-10"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 required
@@ -421,7 +421,7 @@ export default function ForgotPasswordPage() {
                                     <div className="text-center">
                                         <Link
                                             href="/login"
-                                            className="text-sm text-green-500 hover:text-green-600 transition-colors hover:underline"
+                                            className="text-sm text-primary hover:text-primary/80 transition-colors hover:underline"
                                         >
                                             Back to login
                                         </Link>

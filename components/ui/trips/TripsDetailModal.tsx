@@ -9,7 +9,7 @@ import dynamic from "next/dynamic"
 
 const OnConfirmationDelete = dynamic(() => import('@/components/shared/OnConfirmationDelete').then(mod => mod.OnConfirmationDelete), {
     ssr: false,
-  })
+})
 
 const tripCategories = [
     { id: 1, name: "Business", color: "bg-blue-400", icon: Wallet },
@@ -33,7 +33,7 @@ const tripStatuses = [
 // Trip Details Modal Component
 const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
     const [showDelete, setShowDelete] = useState(false)
-    
+
     if (!trip) return null
 
     const category = tripCategories.find((c) => c.name === trip.category)
@@ -42,9 +42,9 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
     const daysUntilTrip = getDaysUntilTrip(trip.startDate)
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4 animate-fadeIn">
             <div
-                className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scaleIn"
+                className="bg-card rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scaleIn border border-border"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
@@ -105,25 +105,25 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
                     <div className="space-y-6">
                         {/* Description */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Description</h3>
-                            <p className="text-gray-600 leading-relaxed">{trip.description}</p>
+                            <h3 className="text-lg font-semibold text-foreground mb-2">Description</h3>
+                            <p className="text-muted-foreground leading-relaxed">{trip.description}</p>
                         </div>
 
                         {/* Trip Status */}
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="text-sm font-medium text-gray-500 mb-2">Trip Status</h4>
+                        <div className="bg-muted/50 p-4 rounded-lg">
+                            <h4 className="text-sm font-medium text-muted-foreground mb-2">Trip Status</h4>
                             <div className="flex items-center justify-between">
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${status?.color} text-white`}>
                                     {status?.name}
                                 </span>
                                 <span
                                     className={`text-sm font-medium ${daysUntilTrip < 0
-                                        ? "text-gray-500"
+                                        ? "text-muted-foreground"
                                         : daysUntilTrip === 0
-                                            ? "text-green-600"
+                                            ? "text-green-600 dark:text-green-400"
                                             : daysUntilTrip <= 7
-                                                ? "text-orange-600"
-                                                : "text-blue-600"
+                                                ? "text-orange-600 dark:text-orange-400"
+                                                : "text-primary"
                                         }`}
                                 >
                                     {daysUntilTrip < 0
@@ -137,7 +137,7 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
 
                         {/* Destinations */}
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Itinerary</h3>
+                            <h3 className="text-lg font-semibold text-foreground mb-4">Itinerary</h3>
                             <div className="space-y-4">
                                 {trip.destinations?.map((destinationGroup: any) => (
                                     <div key={destinationGroup.tripId}>
@@ -146,28 +146,28 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
                                                 // Style 1 - Blue theme
                                                 <div
                                                     key={dest.id}
-                                                    className="bg-blue-50 p-4 rounded-lg border-l-4 border border-blue-400 mb-4 relative"
+                                                    className="bg-blue-50/50 dark:bg-blue-950/30 p-4 rounded-lg border-l-4 border-blue-400 dark:border-blue-500 mb-4 relative"
                                                 >
                                                     <div className="flex justify-between items-center mb-3">
-                                                        <h4 className="font-semibold text-blue-800">
+                                                        <h4 className="font-semibold text-blue-800 dark:text-blue-300">
                                                             {dest.destination_name}
                                                         </h4>
-                                                        <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                                                        <span className="text-sm bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded">
                                                             {dest.days} days
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 className="text-xs font-medium text-gray-600 uppercase mb-2">
+                                                        <h5 className="text-xs font-medium text-muted-foreground uppercase mb-2">
                                                             Activities
                                                         </h5>
                                                         <ul className="space-y-2">
-                                                                <li
-                                                                    key={index}
-                                                                    className="text-sm text-blue-700 flex items-center"
-                                                                >
-                                                                    <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-3"></span>
-                                                                    {dest.activities}
-                                                                </li>
+                                                            <li
+                                                                key={index}
+                                                                className="text-sm text-blue-700 dark:text-blue-300 flex items-center"
+                                                            >
+                                                                <span className="inline-block w-2 h-2 rounded-full bg-blue-400 dark:bg-blue-500 mr-3"></span>
+                                                                {dest.activities}
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -175,28 +175,28 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
                                                 // Style 2 - Purple theme
                                                 <div
                                                     key={dest.id}
-                                                    className="bg-purple-50 p-4 rounded-lg border-l-4 border border-purple-400 mb-4 relative"
+                                                    className="bg-purple-50/50 dark:bg-purple-950/30 p-4 rounded-lg border-l-4 border-purple-400 dark:border-purple-500 mb-4 relative"
                                                 >
                                                     <div className="flex justify-between items-center mb-3">
-                                                        <h4 className="font-semibold text-purple-800">
+                                                        <h4 className="font-semibold text-purple-800 dark:text-purple-300">
                                                             {dest.destination_name}
                                                         </h4>
-                                                        <span className="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                                        <span className="text-sm bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">
                                                             {dest.days} days
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 className="text-xs font-medium text-gray-600 uppercase mb-2">
+                                                        <h5 className="text-xs font-medium text-muted-foreground uppercase mb-2">
                                                             Activities
                                                         </h5>
                                                         <ul className="space-y-2">
-                                                                <li
-                                                                    key={index}
-                                                                    className="text-sm text-purple-700 flex items-center"
-                                                                >
-                                                                    <span className="inline-block w-2 h-2 rounded-full bg-purple-400 mr-3"></span>
-                                                                    {dest.activities}
-                                                                </li>
+                                                            <li
+                                                                key={index}
+                                                                className="text-sm text-purple-700 dark:text-purple-300 flex items-center"
+                                                            >
+                                                                <span className="inline-block w-2 h-2 rounded-full bg-purple-400 dark:bg-purple-500 mr-3"></span>
+                                                                {dest.activities}
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -209,52 +209,52 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
 
                         {/* Trip Details */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h4 className="text-sm font-medium text-gray-500 mb-2">Travelers</h4>
+                            <div className="bg-muted/50 p-4 rounded-lg">
+                                <h4 className="text-sm font-medium text-muted-foreground mb-2">Travelers</h4>
                                 <div className="flex flex-wrap gap-2">
                                     {trip.travelers.split(',').map((traveler: string, index: number) => (
                                         <div
                                             key={index}
-                                            className="flex items-center bg-white rounded-full px-3 py-1 border border-gray-200"
+                                            className="flex items-center bg-card rounded-full px-3 py-1 border border-border"
                                         >
-                                            <Users className="h-3 w-3 mr-1 text-gray-500" />
-                                            <span className="text-xs font-medium text-gray-700">{traveler.trim()}</span>
+                                            <Users className="h-3 w-3 mr-1 text-muted-foreground" />
+                                            <span className="text-xs font-medium text-foreground">{traveler.trim()}</span>
                                         </div>
                                     ))
                                     }
                                 </div>
 
                             </div>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h4 className="text-sm font-medium text-gray-500 mb-2">Budget</h4>
+                            <div className="bg-muted/50 p-4 rounded-lg">
+                                <h4 className="text-sm font-medium text-muted-foreground mb-2">Budget</h4>
                                 <div className="flex items-center">
-                                    <CreditCard className="h-4 w-4 mr-2 text-gray-500" />
-                                    <span className="text-lg font-semibold text-gray-800">
+                                    <CreditCard className="h-4 w-4 mr-2 text-muted-foreground" />
+                                    <span className="text-lg font-semibold text-foreground">
                                         {trip.budget} {trip.currency}
                                     </span>
                                 </div>
                             </div>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h4 className="text-sm font-medium text-gray-500 mb-2">Accommodation</h4>
+                            <div className="bg-muted/50 p-4 rounded-lg">
+                                <h4 className="text-sm font-medium text-muted-foreground mb-2">Accommodation</h4>
                                 <div className="flex items-start">
-                                    <Luggage className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
-                                    <span className="text-sm text-gray-700">{trip.accommodation}</span>
+                                    <Luggage className="h-4 w-4 mr-2 text-muted-foreground mt-0.5" />
+                                    <span className="text-sm text-foreground">{trip.accommodation}</span>
                                 </div>
                             </div>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h4 className="text-sm font-medium text-gray-500 mb-2">Transportation</h4>
+                            <div className="bg-muted/50 p-4 rounded-lg">
+                                <h4 className="text-sm font-medium text-muted-foreground mb-2">Transportation</h4>
                                 <div className="flex items-start">
-                                    <PlaneLanding className="h-4 w-4 mr-2 text-gray-500 mt-0.5" />
-                                    <span className="text-sm text-gray-700">{trip.transportation}</span>
+                                    <PlaneLanding className="h-4 w-4 mr-2 text-muted-foreground mt-0.5" />
+                                    <span className="text-sm text-foreground">{trip.transportation}</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Notes */}
                         {trip.notes && (
-                            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                <h4 className="text-sm font-medium text-yellow-800 mb-2">Notes</h4>
-                                <p className="text-sm text-yellow-700">{trip.notes}</p>
+                            <div className="bg-yellow-50/50 dark:bg-yellow-950/30 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                                <h4 className="text-sm font-medium text-yellow-800 dark:text-yellow-300 mb-2">Notes</h4>
+                                <p className="text-sm text-yellow-700 dark:text-yellow-400">{trip.notes}</p>
                             </div>
                         )}
                     </div>
@@ -262,7 +262,7 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
                     <div className="mt-8 flex justify-between">
                         <Button
                             variant="outline"
-                            className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+                            className="text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
                             onClick={() => {
                                 setShowDelete(true)
                             }}
@@ -281,17 +281,17 @@ const TripDetailsModal = ({ trip, onClose, onEdit, onDelete }: any) => {
                     <OnConfirmationDelete
                         show={showDelete}
                         onConfirm={() => {
-                            onDelete?.(trip?.id); 
+                            onDelete?.(trip?.id);
                             setShowDelete(false);
                             onClose();
-                          }}
+                        }}
                         onClose={() => setShowDelete(false)}
                         title={trip?.title || ""}
                         description={`Are you sure you want to delete this trip? This action cannot be undone.`}
                     />
                 )
             }
-            
+
         </div>
     )
 }

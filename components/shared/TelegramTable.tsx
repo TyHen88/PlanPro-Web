@@ -193,8 +193,8 @@ const TelegramTable: React.FC<TelegramTableProps> = ({
                 status === 'active'
                   ? 'default'
                   : status === 'inactive'
-                  ? 'secondary'
-                  : 'destructive'
+                    ? 'secondary'
+                    : 'destructive'
               }
               className={cn(
                 status === 'active' && 'bg-green-100 text-green-800 hover:bg-green-200',
@@ -317,7 +317,7 @@ const TelegramTable: React.FC<TelegramTableProps> = ({
     onRowSelectionChange: (updater) => {
       const newSelection = typeof updater === 'function' ? updater(rowSelection) : updater
       setRowSelection(newSelection)
-      
+
       // Call onRowSelect with the current selected rows
       if (onRowSelectRef.current) {
         // Calculate selected rows based on the new selection
@@ -376,7 +376,7 @@ const TelegramTable: React.FC<TelegramTableProps> = ({
             />
           </div>
         </div>
-        
+
         {/* Status filter */}
         <Select
           value={(table.getColumn('status')?.getFilterValue() as string[])?.join(',') || 'all'}
@@ -474,9 +474,9 @@ const TelegramTable: React.FC<TelegramTableProps> = ({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </th>
                   ))}
                 </tr>
@@ -542,7 +542,7 @@ const TelegramTable: React.FC<TelegramTableProps> = ({
             </SelectContent>
           </Select>
         </div>
-        
+
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             Page {table.getState().pagination.pageIndex + 1} of{' '}

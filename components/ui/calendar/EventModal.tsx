@@ -1,5 +1,7 @@
 import { Button } from "@/components/shared/ui/Button"
 import { Input } from "@/components/shared/ui/Input"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog"
+import { Label } from "@/components/shared/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MapPin, Trash2, Users } from "lucide-react"
 import { useState } from "react"
@@ -57,7 +59,7 @@ function getApiCategoryId(event: CalendarEvent | null): string {
 // Event Modal Component
 const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventModalProps) => {
     const [showConfirmDelete, setShowConfirmDelete] = useState(false)
-    
+
     // useForm setup
     const {
         register,
@@ -79,8 +81,6 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
             attendees: event?.attendees?.join(", ") || "",
         },
     })
-    
-    if (!event) return null;
 
     // Save handler: match API request shape
     const onSubmit = (data: EventFormData) => {
@@ -113,112 +113,109 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
     }
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
-            <div
-                className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden animate-scaleIn"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div
-                    className={`p-4 text-white ${isNew ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-gradient-to-r from-blue-500 to-teal-500"
-                        }`}
-                >
-                    <h2 className="text-xl font-semibold">{isNew ? "Create New Event" : "Edit Event"}</h2>
-                </div>
+        <Dialog open={!!event} onOpenChange={onClose}>
+            <DialogContent className="max-w-md max-h-[90vh] p-0 overflow-hidden flex flex-col">
+                <DialogHeader className={`p-4 text-white ${isNew ? "bg-gradient-to-r from-blue-500 to-purple-500" : "bg-gradient-to-r from-blue-500 to-teal-500"
+                    }`}>
+                    <DialogTitle className="text-xl font-semibold text-white">
+                        {isNew ? "Create New Event" : "Edit Event"}
+                    </DialogTitle>
+                </DialogHeader>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-6">
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="eventTitle" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="eventTitle" className="text-foreground">
                                 Event Title*
-                            </label>
+                            </Label>
                             <Input
                                 id="eventTitle"
                                 {...register("eventTitle")}
                                 placeholder="Enter event title"
-                                className="w-full"
+                                className="w-full mt-1"
                             />
-                            {errors.eventTitle && <p className="text-sm text-red-600">{errors.eventTitle.message}</p>}
+                            {errors.eventTitle && <p className="text-sm text-destructive mt-1">{errors.eventTitle.message}</p>}
                         </div>
 
                         <div>
-                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="description" className="text-foreground">
                                 Description
-                            </label>
+                            </Label>
                             <textarea
                                 id="description"
                                 {...register("description")}
                                 placeholder="Enter event description"
                                 rows={3}
-                                className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2 mt-1 resize-none"
                             />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
+                                <Label htmlFor="startDate" className="text-foreground">
                                     Start Date*
-                                </label>
+                                </Label>
                                 <Input
                                     id="startDate"
                                     type="date"
                                     {...register("startDate")}
-                                    className="w-full"
+                                    className="w-full mt-1"
                                 />
-                                {errors.startDate && <p className="text-sm text-red-600">{errors.startDate.message}</p>}
+                                {errors.startDate && <p className="text-sm text-destructive mt-1">{errors.startDate.message}</p>}
                             </div>
                             <div>
-                                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-1">
+                                <Label htmlFor="startTime" className="text-foreground">
                                     Start Time*
-                                </label>
+                                </Label>
                                 <Input
                                     id="startTime"
                                     type="time"
                                     {...register("startTime")}
-                                    className="w-full"
+                                    className="w-full mt-1"
                                 />
-                                {errors.startTime && <p className="text-sm text-red-600">{errors.startTime.message}</p>}
+                                {errors.startTime && <p className="text-sm text-destructive mt-1">{errors.startTime.message}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
+                                <Label htmlFor="endDate" className="text-foreground">
                                     End Date*
-                                </label>
+                                </Label>
                                 <Input
                                     id="endDate"
                                     type="date"
                                     {...register("endDate")}
-                                    className="w-full"
+                                    className="w-full mt-1"
                                 />
-                                {errors.endDate && <p className="text-sm text-red-600">{errors.endDate.message}</p>}
+                                {errors.endDate && <p className="text-sm text-destructive mt-1">{errors.endDate.message}</p>}
                             </div>
                             <div>
-                                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+                                <Label htmlFor="endTime" className="text-foreground">
                                     End Time*
-                                </label>
+                                </Label>
                                 <Input
                                     id="endTime"
                                     type="time"
                                     {...register("endTime")}
-                                    className="w-full"
+                                    className="w-full mt-1"
                                 />
-                                {errors.endTime && <p className="text-sm text-red-600">{errors.endTime.message}</p>}
+                                {errors.endTime && <p className="text-sm text-destructive mt-1">{errors.endTime.message}</p>}
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="calendarType" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="calendarType" className="text-foreground">
                                 Category
-                            </label>
-                            <div className="grid grid-cols-3 gap-2">
+                            </Label>
+                            <div className="grid grid-cols-3 gap-2 mt-1">
                                 {eventCategories.map((category) => (
                                     <button
                                         key={category.id}
                                         type="button"
                                         className={`p-2 rounded-md text-xs font-medium text-center transition-all ${watch("calendarType") === category.id
-                                                ? `${category.color} text-white ring-2 ring-offset-2 ring-${category.color.split("-")[1]}-500`
-                                                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                                            ? `${category.color} text-white ring-2 ring-offset-2 ring-offset-background`
+                                            : "bg-muted hover:bg-muted/80 text-foreground border border-border"
                                             }`}
                                         onClick={() => setValue("calendarType", category.id)}
                                     >
@@ -226,15 +223,15 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
                                     </button>
                                 ))}
                             </div>
-                            {errors.calendarType && <p className="text-sm text-red-600">{errors.calendarType.message}</p>}
+                            {errors.calendarType && <p className="text-sm text-destructive mt-1">{errors.calendarType.message}</p>}
                         </div>
 
                         <div>
-                            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="location" className="text-foreground">
                                 Location
-                            </label>
-                            <div className="relative">
-                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            </Label>
+                            <div className="relative mt-1">
+                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="location"
                                     {...register("location")}
@@ -245,11 +242,11 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
                         </div>
 
                         <div>
-                            <label htmlFor="attendees" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="attendees" className="text-foreground">
                                 Attendees (comma separated)
-                            </label>
-                            <div className="relative">
-                                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            </Label>
+                            <div className="relative mt-1">
+                                <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     id="attendees"
                                     {...register("attendees")}
@@ -265,7 +262,7 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
                             {!isNew && (
                                 <Button
                                     variant="outline"
-                                    className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+                                    className="text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive"
                                     onClick={() => {
                                         setShowConfirmDelete(true)
                                     }}
@@ -278,18 +275,14 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
                             <Button variant="outline" onClick={onClose}>
                                 Cancel
                             </Button>
-                            <Button type="submit" className="relative group overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-blue-500 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-500 group-hover:to-blue-600 transition-all duration-300"></div>
-                                <span className="relative z-10 flex items-center justify-center text-white">
+                            <Button type="submit">
                                     {isNew ? "Create Event" : "Save Changes"}
-                                </span>
                             </Button>
                         </div>
                     </div>
                 </form>
-            </div>
-            {
-                showConfirmDelete && (
+            </DialogContent>
+            {showConfirmDelete && (
                     <OnConfirmationDelete
                         onClose={() => setShowConfirmDelete(false)}
                         onConfirm={() => {
@@ -300,9 +293,8 @@ const EventModal = ({ event, onClose, onSave, onDelete, isNew = false }: EventMo
                         show={showConfirmDelete}
                         description={`Are you sure you want to delete this event? This action cannot be undone.`}
                     />
-                )
-            }
-        </div>
+            )}
+        </Dialog>
     )
 }
 

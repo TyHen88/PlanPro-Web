@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
-import toast from "react-hot-toast"
+import { toast } from "sonner"
 import EventDetailModal from "./EventDetailModel"
 import EventModal from "./EventModal"
 
@@ -118,19 +118,19 @@ const DayCell = ({ day, month, year, events, onEventClick, onAddEvent }: DayCell
 
     return (
         <div
-            className={`min-h-[100px] p-1 border border-gray-200 ${isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-400"
-                } ${isToday ? "ring-2 ring-blue-200" : ""} relative group`}
+            className={`min-h-[100px] p-1 border border-border ${isCurrentMonth ? "bg-card" : "bg-muted/50 text-muted-foreground"
+                } ${isToday ? "ring-2 ring-primary/20" : ""} relative group`}
         >
             <div className="flex justify-between items-start">
                 <span
-                    className={`inline-block w-6 h-6 text-center ${isToday ? "bg-blue-500 text-white rounded-full" : isCurrentMonth ? "text-gray-700" : "text-gray-400"
+                    className={`inline-block w-6 h-6 text-center ${isToday ? "bg-primary text-primary-foreground rounded-full" : isCurrentMonth ? "text-foreground" : "text-muted-foreground"
                         }`}
                 >
                     {day}
                 </span>
                 <button
                     onClick={() => onAddEvent(new Date(year, month, day))}
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-accent opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                     <Plus className="h-4 w-4" />
                 </button>
@@ -141,7 +141,7 @@ const DayCell = ({ day, month, year, events, onEventClick, onAddEvent }: DayCell
                     return (
                         <div
                             key={event.id}
-                            className={`px-2 py-1 text-xs rounded-md cursor-pointer truncate ${category ? category.color : "bg-gray-200"
+                            className={`px-2 py-1 text-xs rounded-md cursor-pointer truncate ${category ? category.color : "bg-muted"
                                 } text-white hover:opacity-90 transition-opacity`}
                             onClick={() => onEventClick(event)}
                         >
@@ -171,7 +171,7 @@ const CalendarPage = () => {
         }
         return arr.map(mapApiEvent);
     }, [calendar])
-    
+
     const queryClient = useQueryClient()
     const [currentDate, setCurrentDate] = useState(new Date())
     const [events, setEvents] = useState<CalendarEvent[]>([])
@@ -240,7 +240,7 @@ const CalendarPage = () => {
     const deleteCalendarMutation = useMutation({
         mutationFn: (eventId: number) => calendarService.deleteCalendar(eventId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["calendar"]})
+            queryClient.invalidateQueries({ queryKey: ["calendar"] })
             toast.success("Calendar deleted successfully")
         },
         onError: (error) => {
@@ -319,7 +319,7 @@ const CalendarPage = () => {
             calendarDays.push(
                 <div
                     key={`header-${i}`}
-                    className="p-2 text-center font-medium text-gray-500 bg-gray-50 border border-gray-200"
+                    className="p-2 text-center font-medium text-muted-foreground bg-muted/50 border border-border"
                 >
                     {weekdays[i]}
                 </div>,
@@ -328,7 +328,7 @@ const CalendarPage = () => {
 
         // Add empty cells for days before the first day of the month
         for (let i = 0; i < firstDayOfMonth; i++) {
-            calendarDays.push(<div key={`empty-${i}`} className="bg-gray-50 border border-gray-200"></div>)
+            calendarDays.push(<div key={`empty-${i}`} className="bg-muted/50 border border-border"></div>)
         }
 
         // Add cells for each day of the month
@@ -386,31 +386,31 @@ const CalendarPage = () => {
     };
 
     return (
-        <div className="bg-gray-50 overflow-y-auto custom-scrollbar">
+        <div className="bg-background overflow-y-auto custom-scrollbar">
             <div className=" mx-auto p-4">
                 {/* Header Section */}
                 <div className="mb-6 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 rounded-xl"></div>
-                    <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white z-1">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-400/10 to-teal-400/10 dark:from-blue-500/5 dark:via-purple-400/5 dark:to-teal-400/5 rounded-xl"></div>
+                    <div className="bg-card rounded-xl p-6 relative shadow-lg border border-border z-1">
                         {/* Decorative elements */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 translate-x-1/3 -translate-y-1/3"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 -translate-x-1/3 translate-y-1/3"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 dark:bg-blue-500/10 rounded-full translate-x-1/3 -translate-y-1/3"></div>
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400/5 dark:bg-teal-400/10 rounded-full -translate-x-1/3 translate-y-1/3"></div>
 
                         <div className="relative z-10">
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-2">
+                            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 dark:from-blue-400 dark:via-purple-400 dark:to-teal-400 bg-clip-text text-transparent mb-2">
                                 Calendar
                             </h1>
-                            <div className="text-gray-600 text-sm mb-4">Dashboard • Calendar</div>
+                            <div className="text-muted-foreground text-sm mb-4">Dashboard • Calendar</div>
                             <div className="flex flex-wrap gap-4 text-sm">
-                                <div className="bg-white bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-white flex items-center">
-                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                                        <span className="text-blue-500 font-semibold">{events.length}</span>
+                                <div className="bg-card/70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-border flex items-center">
+                                    <div className="w-8 h-8 rounded-full bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center mr-3">
+                                        <span className="text-blue-600 dark:text-blue-400 font-semibold">{events.length}</span>
                                     </div>
-                                    <span className="text-gray-700">Total Events</span>
+                                    <span className="text-foreground">Total Events</span>
                                 </div>
-                                <div className="bg-white bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-white flex items-center">
-                                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                                        <span className="text-purple-500 font-semibold">
+                                <div className="bg-card/70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-border flex items-center">
+                                    <div className="w-8 h-8 rounded-full bg-purple-500/10 dark:bg-purple-500/20 flex items-center justify-center mr-3">
+                                        <span className="text-purple-600 dark:text-purple-400 font-semibold">
                                             {
                                                 events.filter(
                                                     (e: CalendarEvent) => {
@@ -427,43 +427,43 @@ const CalendarPage = () => {
                                             }
                                         </span>
                                     </div>
-                                    <span className="text-gray-700">This Month</span>
+                                    <span className="text-foreground">This Month</span>
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
+                        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 opacity-20 dark:opacity-10">
                             <Image src={CalendarPic} alt="Calendar illustration" width={120} height={120} unoptimized />
                         </div>
                     </div>
                 </div>
 
                 {/* Calendar Controls */}
-                <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+                <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+                    <div className="flex justify-between items-center p-6 border-b border-border bg-muted/30">
                         <div className="flex items-center gap-2">
-                            <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                            <h2 className="text-xl font-semibold text-foreground flex items-center">
                                 <span className="bg-gradient-to-r from-blue-500 to-purple-400 w-5 h-5 rounded-md mr-2"></span>
                                 {currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
                             </h2>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                            <div className="flex border border-border rounded-lg overflow-hidden">
                                 <button
-                                    className={`px-3 py-1 text-sm ${view === "month" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                                    className={`px-3 py-1 text-sm transition-colors ${view === "month" ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-accent"
                                         }`}
                                     onClick={() => setView("month")}
                                 >
                                     Month
                                 </button>
                                 <button
-                                    className={`px-3 py-1 text-sm ${view === "week" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                                    className={`px-3 py-1 text-sm transition-colors ${view === "week" ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-accent"
                                         }`}
                                     onClick={() => setView("week")}
                                 >
                                     Week
                                 </button>
                                 <button
-                                    className={`px-3 py-1 text-sm ${view === "day" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                                    className={`px-3 py-1 text-sm transition-colors ${view === "day" ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-accent"
                                         }`}
                                     onClick={() => setView("day")}
                                 >
@@ -485,13 +485,9 @@ const CalendarPage = () => {
                                 onClick={() =>
                                     handleAddEvent(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()))
                                 }
-                                className="relative group overflow-hidden"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-blue-500 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-500 group-hover:to-blue-600 transition-all duration-300"></div>
-                                <span className="relative z-10 flex items-center justify-center text-white">
                                     <Plus size={16} className="mr-1" />
                                     Add Event
-                                </span>
                             </Button>
                         </div>
                     </div>
@@ -500,22 +496,22 @@ const CalendarPage = () => {
                     <div className="p-4">
                         {view === "month" && <div className="grid grid-cols-7 gap-0">{renderCalendarGrid()}</div>}
                         {view === "week" && (
-                            <div className="bg-gray-50 rounded-lg p-8 text-center">
+                            <div className="bg-muted/50 rounded-lg p-8 text-center">
                                 <div className="flex flex-col items-center justify-center h-64">
-                                    <CalendarDays className="h-16 w-16 text-gray-300 mb-4" />
-                                    <h3 className="text-lg font-medium text-gray-700 mb-2">Week View Coming Soon</h3>
-                                    <p className="text-gray-500 max-w-md">
+                                    <CalendarDays className="h-16 w-16 text-muted-foreground mb-4" />
+                                    <h3 className="text-lg font-medium text-foreground mb-2">Week View Coming Soon</h3>
+                                    <p className="text-muted-foreground max-w-md">
                                         We're working on an amazing week view for your calendar. Stay tuned for updates!
                                     </p>
                                 </div>
                             </div>
                         )}
                         {view === "day" && (
-                            <div className="bg-gray-50 rounded-lg p-8 text-center">
+                            <div className="bg-muted/50 rounded-lg p-8 text-center">
                                 <div className="flex flex-col items-center justify-center h-64">
-                                    <Calendar className="h-16 w-16 text-gray-300 mb-4" />
-                                    <h3 className="text-lg font-medium text-gray-700 mb-2">Day View Coming Soon</h3>
-                                    <p className="text-gray-500 max-w-md">
+                                    <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
+                                    <h3 className="text-lg font-medium text-foreground mb-2">Day View Coming Soon</h3>
+                                    <p className="text-muted-foreground max-w-md">
                                         We're working on a detailed day view for your calendar. Stay tuned for updates!
                                     </p>
                                 </div>
@@ -524,13 +520,13 @@ const CalendarPage = () => {
                     </div>
 
                     {/* Event Categories Legend */}
-                    <div className="p-4 border-t border-gray-200 bg-gray-50">
+                    <div className="p-4 border-t border-border bg-muted/30">
                         <div className="flex flex-wrap items-center gap-4">
-                            <span className="text-sm font-medium text-gray-700">Event Categories:</span>
+                            <span className="text-sm font-medium text-foreground">Event Categories:</span>
                             {eventCategories.map((category) => (
                                 <div key={category.id} className="flex items-center">
                                     <div className={`w-3 h-3 rounded-full ${category.color} mr-1`}></div>
-                                    <span className="text-xs text-gray-600">{category.name}</span>
+                                    <span className="text-xs text-muted-foreground">{category.name}</span>
                                 </div>
                             ))}
                         </div>

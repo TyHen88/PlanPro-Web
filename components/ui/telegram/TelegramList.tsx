@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import TelegramTable, { TelegramData } from '@/components/shared/TelegramTable'
-import { toast } from 'react-hot-toast'
+import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/shared/ui/card'
 import { CheckSquare, Target, Zap, Star, Plus } from 'lucide-react'
 import { Tabs, TabsTrigger, TabsList, TabsContent } from '@/components/shared/ui/tabs'
@@ -59,19 +59,19 @@ const StatCard = ({
     label,
     color,
     bgColor,
-  }: {
+}: {
     value: number
     label: string
     color: string
     bgColor: string
-  }) => (
+}) => (
     <div className="bg-white bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-white flex items-center">
-      <div className={`w-8 h-8 rounded-full ${bgColor} flex items-center justify-center mr-3`}>
-        <span className={`${color} font-semibold`}>{value}</span>
-      </div>
-      <span className="text-gray-700">{label}</span>
+        <div className={`w-8 h-8 rounded-full ${bgColor} flex items-center justify-center mr-3`}>
+            <span className={`${color} font-semibold`}>{value}</span>
+        </div>
+        <span className="text-gray-700">{label}</span>
     </div>
-  )
+)
 const TelegramList: React.FC = () => {
     const [selectedRows, setSelectedRows] = useState<TelegramData[]>([])
     const [activeTab, setActiveTab] = useState<string>('trip')
@@ -160,7 +160,7 @@ const TelegramList: React.FC = () => {
                         </TabsTrigger>
                     ))}
                 </TabsList>
-            
+
                 <TabsContent value="trip">
                     <div className="p-4 overflow-auto">
                         <TelegramTable

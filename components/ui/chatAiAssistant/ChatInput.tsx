@@ -43,7 +43,7 @@ export default function ChatInput({
     }
 
     return (
-        <div className={`flex flex-row-reverse space-x-reverse space-x-2 ${className}`}>
+        <div className={`flex items-center gap-2 ${className}`}>
             <textarea
                 ref={textareaRef}
                 value={input}
@@ -51,19 +51,16 @@ export default function ChatInput({
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 disabled={disabled}
-                className="flex-1 bg-gray-100 text-gray-900 placeholder-gray-400 rounded-lg px-6 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                style={{ minHeight: '30px', maxHeight: '120px' }}
+                className="flex-1 bg-muted text-foreground placeholder:text-muted-foreground rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none border border-input disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
                 type="button"
                 disabled={!input.trim() || disabled}
                 onClick={handleSend}
-                className="p-2"
-                style={{ background: "none", border: "none", boxShadow: "none" }}
+                className="p-2.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-opacity hover:bg-accent flex-shrink-0"
             >
                 <PaperAirplaneIcon
-                    className="w-5 h-5 rotate-[-90deg]"
-                    style={{ color: (!input.trim() || disabled) ? "#9ca3af" : "#a21caf" }}
+                    className={`w-5 h-5 rotate-[-90deg] ${(!input.trim() || disabled) ? "text-muted-foreground" : "text-primary"}`}
                 />
             </button>
         </div>

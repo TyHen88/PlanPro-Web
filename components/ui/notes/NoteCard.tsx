@@ -32,7 +32,7 @@ const NoteCard = ({ note, isSelected, onSelect, onDelete, onEdit }: NoteCardProp
     return (
         <>
             <div
-                className={`relative group rounded-xl overflow-hidden transition-all duration-300 ${isSelected ? "ring-2 ring-offset-2 ring-blue-500 shadow-md" : "shadow-sm hover:shadow-md"
+                className={`relative group rounded-xl overflow-hidden transition-all duration-300 ${isSelected ? "ring-2 ring-offset-2 ring-primary shadow-md" : "shadow-sm hover:shadow-md"
                     }`}
                 onClick={(e) => {
                     e.stopPropagation()
@@ -42,14 +42,14 @@ const NoteCard = ({ note, isSelected, onSelect, onDelete, onEdit }: NoteCardProp
                 <div
                     className={`absolute inset-0 bg-gradient-to-br ${getGradient(
                         note.color,
-                    )} opacity-90 transition-opacity duration-300 group-hover:opacity-100`}
+                    )} opacity-90 dark:opacity-80 transition-opacity duration-300 group-hover:opacity-100 dark:group-hover:opacity-90`}
                 ></div>
                 <div className="relative p-4 h-full flex flex-col">
                     <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-sm text-gray-900 truncate max-w-[80%]">{note.title}</h3>
+                        <h3 className="font-semibold text-sm text-gray-800 truncate max-w-[80%]">{note.title}</h3>
                         <div className="flex gap-1 ml-auto">
                             <button
-                                className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:text-blue-600 p-1 rounded-full hover:bg-white hover:bg-opacity-30"
+                                className="text-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:text-primary p-1 rounded-full hover:bg-white/30 dark:hover:bg-black/20"
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     onEdit(note)
@@ -58,7 +58,7 @@ const NoteCard = ({ note, isSelected, onSelect, onDelete, onEdit }: NoteCardProp
                                 <Edit size={14} />
                             </button>
                             <button
-                                className="text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:text-red-600 p-1 rounded-full hover:bg-white hover:bg-opacity-30"
+                                className="text-gray-800 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:text-destructive p-1 rounded-full hover:bg-white/30 dark:hover:bg-black/20"
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     onDelete(note)
@@ -68,14 +68,14 @@ const NoteCard = ({ note, isSelected, onSelect, onDelete, onEdit }: NoteCardProp
                             </button>
                         </div>
                     </div>
-                    <p className="text-xs text-gray-700 line-clamp-3 mb-2 flex-grow">{note.content}</p>
+                    <p className="text-xs text-gray-800 line-clamp-3 mb-2 flex-grow">{note.content}</p>
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center text-xs text-gray-700 mt-auto">
+                        <div className="flex items-center text-xs text-gray-800 mt-auto">
                             <CalendarDays size={12} className="mr-1" />
                             {formatDate(note.createdAt)}
                         </div>
                         <button
-                            className={`${note.textColor} text-xs hover:underline`}
+                            className={`text-gray-800 text-xs hover:underline font-medium`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setIsShowDetail(true);
@@ -85,8 +85,6 @@ const NoteCard = ({ note, isSelected, onSelect, onDelete, onEdit }: NoteCardProp
                         </button>
                     </div>
                 </div>
-
-
             </div>
             <NoteDetailModal
                 data={note}

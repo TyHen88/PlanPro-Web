@@ -16,13 +16,13 @@ const EmptySetup = ({ isConnected, isActive }: EmptySetupProps) => {
     console.log("isActive", isActive)
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 text-center">
-            <div className="rounded-full bg-white p-3 mb-4">
-                <Bell className="h-8 w-8 text-blue-500" />
+            <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-3 mb-4">
+                <Bell className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className="text-lg font-medium text-foreground mb-1">
                 Connect Telegram to use Reminders.
             </h3>
-            <p className="text-gray-500 mb-4 max-w-md">
+            <p className="text-muted-foreground mb-4 max-w-md">
                 To set up and receive reminders, you need to connect your Telegram account. Click the button below to connect and start using reminders.
             </p>
 

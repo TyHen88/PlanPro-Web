@@ -2,10 +2,12 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import RootLayout from "@/components/ui/layout/RootLayout";
 import { NextPage } from "next";
-import { ReactElement, ReactNode, useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SessionProvider } from "next-auth/react";
-import toast, { Toaster, useToasterStore } from "react-hot-toast";
+import { ReactElement, ReactNode } from "react";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { ThemeProvider } from "@/components/shared/theme-provider";
+import { Providers } from "@/components/shared/providers";
+import RouteProgress from "@/components/shared/route-progress";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -15,56 +17,50 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries:{
-      refetchOnWindowFocus: false,
-    }
-  }
-});
+// Placeholder Header component - replace with your actual Header component
+function Header() {
+  return null; // Add your Header component here if needed
+}
+
+// Placeholder Analytics component - install @vercel/analytics if needed
+function Analytics() {
+  return null; // Add your Analytics component here if needed
+}
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const basePathAuth = process.env.NEXT_PUBLIC_AUTH_BASE_PATH;
-  const { toasts } = useToasterStore();
-  useEffect(() => {
-    toasts
-      .filter((t) => t.visible) // Only consider visible toasts
-      .filter((_, i) => i >= 1) // Check if toast index exceeds limit
-      .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) removal without animation
-  }, [toasts]);
+
   if (Component.getLayout) {
     return (
-      <SessionProvider session={pageProps.session} basePath={basePathAuth}>
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-          toastOptions={{
-            style: {
-              pointerEvents: 'none'
-            }
-          }} />
-        <QueryClientProvider client={queryClient}>
-          {Component.getLayout(<Component {...pageProps} />)}
-        </QueryClientProvider>
-      </SessionProvider>
+      <div className={`${GeistSans.variable} ${GeistMono.variable}`}>
+        <ThemeProvider>
+          <Providers session={pageProps.session} basePath={basePathAuth}>
+            <div className={`${GeistSans.className} font-sans antialiased`}>
+              <Header />
+              {Component.getLayout(<Component {...pageProps} />)}
+            </div>
+          </Providers>
+          <RouteProgress />
+          <Analytics />
+        </ThemeProvider>
+      </div>
     );
   }
 
   return (
-    <SessionProvider session={pageProps.session} basePath={basePathAuth}>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          style: {
-            pointerEvents: 'none'
-          }
-        }} />
-      <QueryClientProvider client={queryClient}>
-        <RootLayout>
-          <Component {...pageProps} />
-        </RootLayout>
-      </QueryClientProvider>
-    </SessionProvider>
+    <div className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <ThemeProvider>
+        <Providers session={pageProps.session} basePath={basePathAuth}>
+          <div className={`${GeistSans.className} font-sans antialiased`}>
+            <Header />
+            <RootLayout>
+              <Component {...pageProps} />
+            </RootLayout>
+          </div>
+        </Providers>
+        <RouteProgress />
+        <Analytics />
+      </ThemeProvider>
+    </div>
   );
 }

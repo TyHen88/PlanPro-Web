@@ -379,9 +379,9 @@ const FeatureDetailsModal = ({
           <DialogTitle className="flex items-center space-x-3">
             {feature.icon}
             <span>{feature.name}</span>
-            <Badge className={feature.category === "core" ? "bg-blue-100 text-blue-800" : 
-                            feature.category === "advanced" ? "bg-purple-100 text-purple-800" : 
-                            "bg-yellow-100 text-yellow-800"}>
+            <Badge className={feature.category === "core" ? "bg-blue-100 text-blue-800" :
+              feature.category === "advanced" ? "bg-purple-100 text-purple-800" :
+                "bg-yellow-100 text-yellow-800"}>
               {feature.category}
             </Badge>
           </DialogTitle>
@@ -593,7 +593,7 @@ export default function TelegramFeatureSetup() {
               <p className="text-lg text-gray-600 mb-6">
                 Choose which features you want to enable for Telegram integration. You can always modify these settings later.
               </p>
-              
+
               <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">1</div>
@@ -719,7 +719,7 @@ export default function TelegramFeatureSetup() {
                           {category.features.filter(f => f.isEnabled).length} / {category.features.length} enabled
                         </span>
                       </div>
-                      
+
                       <div className="space-y-2">
                         {category.features.map((feature) => (
                           <div key={feature.id} className="flex items-center justify-between">

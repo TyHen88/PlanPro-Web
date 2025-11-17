@@ -3,7 +3,7 @@ import { useApiRequests } from '@/lib/hooks/useApiRequests'
 import { ApiRequest, ApiResponse } from '@/service/openApiTool.service'
 import { Button } from '@/components/shared/ui/Button'
 import { Input } from '@/components/shared/ui/Input'
-import { Textarea } from '@/components/shared/ui/texarea'
+import { Textarea } from '@/components/shared/ui/textarea'
 import { Card } from '@/components/shared/ui/card'
 import { Badge } from '@/components/shared/ui/badge'
 

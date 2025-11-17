@@ -6,7 +6,7 @@ import { Button } from '@/components/shared/ui/Button'
 import { Switch } from '@/components/shared/ui/swtich'
 import { Badge } from '@/components/shared/ui/badge'
 import LandingSpinner from '@/components/shared/LandingSpinner'
-import toast from 'react-hot-toast'
+import toast from 'sonner'
 import {
     User,
     Phone,
@@ -102,15 +102,15 @@ const TelegramHistory = () => {
     // Get status badge
     const getStatusBadge = (status: boolean, isActive: boolean) => {
         if (!isActive) {
-            return <Badge variant="secondary" className="bg-gray-100 text-gray-600">Disconnected</Badge>
+            return <Badge variant="secondary" className="bg-muted text-muted-foreground">Disconnected</Badge>
         }
         switch (status) {
             case true:
-                return <Badge variant="default" className="bg-green-100 text-green-700">Connected</Badge>
+                return <Badge variant="default" className="bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">Connected</Badge>
             case false:
-                return <Badge variant="outline" className="border-yellow-300 text-yellow-700">Pending</Badge>
+                return <Badge variant="outline" className="border-yellow-500/50 text-yellow-600 dark:text-yellow-400">Pending</Badge>
             default:
-                return <Badge variant="secondary" className="bg-gray-100 text-gray-600">Unknown</Badge>
+                return <Badge variant="secondary" className="bg-muted text-muted-foreground">Unknown</Badge>
         }
     }
 
@@ -126,11 +126,11 @@ const TelegramHistory = () => {
     // Error state
     if (error) {
         return (
-            <Card className="w-full">
+            <Card className="w-full border-border">
                 <CardContent className="flex flex-col items-center justify-center py-12">
-                    <AlertCircle className="h-12 w-12 text-red-500 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Error Loading Telegram History</h3>
-                    <p className="text-gray-600 text-center mb-4">
+                    <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Error Loading Telegram History</h3>
+                    <p className="text-muted-foreground text-center mb-4">
                         Unable to load your telegram connection history. Please try again later.
                     </p>
                     <Button
@@ -148,11 +148,11 @@ const TelegramHistory = () => {
     // Empty state
     if (!telegramHistory || telegramHistory.length === 0) {
         return (
-            <Card className="w-full">
+            <Card className="w-full border-border">
                 <CardContent className="flex flex-col items-center justify-center py-12">
-                    <WifiOff className="h-12 w-12 text-gray-400 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Telegram Connections</h3>
-                    <p className="text-gray-600 text-center mb-4">
+                    <WifiOff className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold text-foreground mb-2">No Telegram Connections</h3>
+                    <p className="text-muted-foreground text-center mb-4">
                         You haven't connected any telegram accounts yet. Connect your first telegram account to get started.
                     </p>
                     <Button variant="default">
@@ -177,8 +177,8 @@ const TelegramHistory = () => {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Telegram History</h2>
-                    <p className="text-gray-600 mt-1">
+                    <h2 className="text-2xl font-bold text-foreground">Telegram History</h2>
+                    <p className="text-muted-foreground mt-1">
                         Manage your connected telegram accounts and their connection status
                     </p>
                 </div>
@@ -195,15 +195,15 @@ const TelegramHistory = () => {
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <Card>
+                <Card className="border-border">
                     <CardContent className="p-4">
                         <div className="flex items-center">
-                            <div className="p-2 bg-green-100 rounded-lg">
-                                <CheckCircle className="h-5 w-5 text-green-600" />
+                            <div className="p-2 bg-green-500/10 rounded-lg">
+                                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                             </div>
                             <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-600">Active</p>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-sm font-medium text-muted-foreground">Active</p>
+                                <p className="text-2xl font-bold text-foreground">
                                     {totalActive}
                                 </p>
                             </div>
@@ -211,15 +211,15 @@ const TelegramHistory = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="border-border">
                     <CardContent className="p-4">
                         <div className="flex items-center">
-                            <div className="p-2 bg-yellow-100 rounded-lg">
-                                <Clock className="h-5 w-5 text-yellow-600" />
+                            <div className="p-2 bg-yellow-500/10 rounded-lg">
+                                <Clock className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
                             </div>
                             <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-600">Pending</p>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-sm font-medium text-muted-foreground">Pending</p>
+                                <p className="text-2xl font-bold text-foreground">
                                     {totalPending}
                                 </p>
                             </div>
@@ -231,36 +231,36 @@ const TelegramHistory = () => {
             {/* Telegram History List */}
             <div className="space-y-4">
                 {telegramHistory?.map((item: any) => (
-                    <Card key={item.id} className="hover:shadow-md transition-shadow">
+                    <Card key={item.id} className="hover:shadow-md transition-shadow border-border">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 {/* Left side - User info */}
                                 <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-gray-100 rounded-full">
-                                        <User className="h-6 w-6 text-gray-600" />
+                                    <div className="p-3 bg-muted rounded-full">
+                                        <User className="h-6 w-6 text-muted-foreground" />
                                     </div>
 
                                     <div className="space-y-1">
                                         <div className="flex items-center space-x-2">
-                                            <h3 className="text-lg font-semibold text-gray-900">
+                                            <h3 className="text-lg font-semibold text-foreground">
                                                 {item.firstName || ''} {item.lastName || ''}
                                             </h3>
                                             {getStatusBadge(item.connected, item.active)}
                                         </div>
 
-                                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                                             <div className="flex items-center space-x-1">
                                                 <span className="font-medium">ID:</span>
-                                                <span>{item.id || <span className="italic text-gray-400">No id</span>}</span>
+                                                <span>{item.id || <span className="italic text-muted-foreground/50">No id</span>}</span>
                                             </div>
                                             <div className="flex items-center space-x-1">
                                                 <span className="font-medium">@</span>
-                                                <span>{item.username || <span className="italic text-gray-400">No username</span>}</span>
+                                                <span>{item.username || <span className="italic text-muted-foreground/50">No username</span>}</span>
                                             </div>
 
                                             <div className="flex items-center space-x-1">
                                                 <Phone className="h-4 w-4" />
-                                                <span>{item.phoneNumber || <span className="italic text-gray-400">No phone</span>}</span>
+                                                <span>{item.phoneNumber || <span className="italic text-muted-foreground/50">No phone</span>}</span>
                                             </div>
 
                                             <div className="flex items-center space-x-1">
@@ -274,7 +274,7 @@ const TelegramHistory = () => {
                                 {/* Right side - Actions */}
                                 <div className="flex items-center space-x-3">
                                     <div className="flex items-center space-x-2">
-                                        <span className="text-sm text-gray-600">Connection</span>
+                                        <span className="text-sm text-muted-foreground">Connection</span>
                                         <Switch
                                             checked={item.connected}
                                             onCheckedChange={() => handleConnectionToggle(item)}
@@ -283,7 +283,7 @@ const TelegramHistory = () => {
                                     </div>
 
                                     {reconnectingId === item.chatId && (
-                                        <div className="flex items-center space-x-2 text-sm text-blue-600">
+                                        <div className="flex items-center space-x-2 text-sm text-primary">
                                             <RefreshCw className="h-4 w-4 animate-spin" />
                                             <span>Reconnecting...</span>
                                         </div>

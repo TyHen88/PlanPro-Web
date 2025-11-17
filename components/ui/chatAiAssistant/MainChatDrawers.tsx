@@ -28,7 +28,7 @@ type Props = {
 
 
 
-function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 15 }: Props) {
+function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 8 }: Props) {
     const [messages, setMessages] = useState<{ text: string; suggestions: string[]; from: "ai" | "user" | "system"; timestamp?: number; isLoading?: boolean; hasBeenTypewritten?: boolean }[]>([
         { text: "Hello! I'm your AI assistant. How can I help you today?", suggestions: [], from: "ai", timestamp: Date.now(), hasBeenTypewritten: true }
     ])
@@ -109,10 +109,10 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
 
     return (
         <div>
-            <Dialog open={open} onClose={setOpen} className="relative z-10">
+            <Dialog open={open} onClose={setOpen} className="relative z-50">
                 <DialogBackdrop
                     transition
-                    className="fixed inset-0 bg-gray-500/50 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
+                    className="fixed inset-0 bg-black/50 dark:bg-black/70 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
                 />
 
                 <div className="fixed inset-0 overflow-hidden">
@@ -127,7 +127,7 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
                                         <button
                                             type="button"
                                             onClick={() => setOpen(false)}
-                                            className="relative rounded-md text-gray-400 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                                            className="relative rounded-md text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-colors"
                                         >
                                             <span className="absolute -inset-2.5" />
                                             <span className="sr-only">Close panel</span>
@@ -138,10 +138,10 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
                                     </div>
                                 </TransitionChild>
 
-                                <div className="relative flex h-full flex-col bg-white py-6 shadow-xl after:absolute after:inset-y-0 after:left-0 after:w-px after:bg-black/10 overflow-hidden">
+                                <div className="relative flex h-full flex-col bg-card py-6 shadow-xl border-l border-border overflow-hidden">
                                     <ChatHeader
-                                        title="PlanPro AI Assistant"
-                                        icon={<Sparkles className="h-6 w-6 text-blue-500" />}
+                                        title="AI Assistant"
+                                        icon={<Sparkles className="h-6 w-6 text-primary" />}
                                         onClose={() => setOpen(false)}
                                     />
 
@@ -162,14 +162,14 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
                                             {isLoading && (
                                                 <div className="flex w-full justify-start">
                                                     <div className="max-w-[90%]">
-                                                        <div className="bg-gray-100 text-gray-900 mr-12 rounded-bl-2xl rounded-tr-2xl rounded-br-md px-4 py-2 text-sm inline-block shadow-md break-words">
+                                                        <div className="bg-muted text-foreground mr-12 rounded-bl-2xl rounded-tr-2xl rounded-br-md px-4 py-2 text-sm inline-block shadow-md break-words border border-border">
                                                             <div className="flex items-center space-x-1">
                                                                 <div className="flex space-x-1">
                                                                     <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                                                                     <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                                                                     <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                                                                 </div>
-                                                                <span className="ml-2">AI is thinking...</span>
+                                                                <span className="ml-2">Thinking...</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -177,7 +177,7 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
                                             )}
                                         </ChatContainer>
 
-                                        <div className="px-4 sm:px-6 pt-4 pb-0 bg-white" style={{ width: '88%' }}>
+                                        <div className="px-4 sm:px-6 pt-4 pb-0 bg-card border-t border-border">
 
                                             {(() => {
                                                 const lastAiMsg = [...messages].reverse().find(msg => msg.from === "ai" && Array.isArray(msg.suggestions) && msg.suggestions.length > 0);
@@ -211,7 +211,7 @@ function ChatDrawerContent({ open, setOpen, typewriterEnabled = true, typewriter
     )
 }
 
-export default function MainChatDrawer({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 15 }: Props) {
+export default function MainChatDrawer({ open, setOpen, typewriterEnabled = true, typewriterSpeed = 8 }: Props) {
     return (
         <AIAssistantProvider>
             <ChatDrawerContent

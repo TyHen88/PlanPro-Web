@@ -44,22 +44,22 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
       setWordCount(0)
       return
     }
-  
+
     if (contentRef.current) {
       setIsContentOverflowing(
         contentRef.current.scrollHeight > contentRef.current.clientHeight
       )
     }
-  
+
     const content = data.content
-      .replace(/[^\w\s]|_/g, "") 
-      .replace(/\s+/g, " ")      
+      .replace(/[^\w\s]|_/g, "")
+      .replace(/\s+/g, " ")
       .trim()
-  
+
     setWordCount(content ? content.split(" ").length : 0)
   }, [data?.content])
-  
-  
+
+
 
   const copyToClipboard = () => {
     if (data?.content) {
@@ -81,7 +81,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -89,7 +89,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
         >
           <motion.div
             className={cn(
-              "relative w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden",
+              "relative w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-border",
               expanded ? "h-[80vh] max-h-[80vh]" : "max-h-[600px]",
             )}
             initial={{ scale: 0.9, opacity: 0 }}
@@ -104,7 +104,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
             {/* Colorful Gradient Header with wave shape */}
             <div className={`relative bg-gradient-to-br ${gradient} pt-8 pb-14`}>
               <div className="absolute top-3 right-3 flex gap-2">
-                
+
               </div>
 
               <div className="px-6">
@@ -145,7 +145,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
             </div>
 
             {/* Note Content */}
-            <div className="bg-white px-8 py-6 relative">
+            <div className="bg-card px-8 py-6 relative">
               {/* <div className="absolute -top-12 right-8 z-20">
                 <div
                   className={` shadow-lg border-4 border-white ${data.color} w-16 h-16 flex items-center justify-center transform transition-transform hover:scale-110`}
@@ -154,7 +154,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
                 </div>
               </div> */}
 
-              <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
+              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
                 <CalendarDays size={16} />
                 <span>{data.createdAt ? formatDate(data.createdAt) : "Unknown"}</span>
                 {data.updatedAt && data.updatedAt !== data.createdAt && (
@@ -167,9 +167,9 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
 
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-gray-700 font-medium">Content</h3>
+                  <h3 className="text-foreground font-medium">Content</h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400">{wordCount} words</span>
+                    <span className="text-xs text-muted-foreground">{wordCount} words</span>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -185,7 +185,7 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
 
                 <div
                   className={cn(
-                    "bg-gray-50 rounded-xl p-4 border border-gray-100",
+                    "bg-muted/50 rounded-xl p-4 border border-border",
                     expanded ? "overflow-y-auto max-h-[calc(80vh-240px)]" : "overflow-y-auto max-h-[200px]",
                     isShortContent && !expanded && "min-h-[100px] flex items-center justify-center",
                   )}
@@ -194,16 +194,16 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
                   {data.content ? (
                     <pre
                       className={cn(
-                        "whitespace-pre-wrap text-base font-medium text-gray-800 leading-relaxed",
+                        "whitespace-pre-wrap text-base font-medium text-foreground leading-relaxed",
                         isShortContent && "text-center",
                       )}
                       style={{ fontFamily: "inherit" }}
                     >
                       {data.content}
-                     
+
                     </pre>
                   ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400 italic">
+                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground italic">
                       <Tag size={24} className="mb-2 opacity-50" />
                       <span>No content</span>
                     </div>
@@ -234,15 +234,15 @@ const NoteDetailModal = ({ data: dataDetail, onClose, onDelete, onEdit, open }: 
                 </Button>
               </div>
               <div className="absolute top-2 right-8 flex gap-2">
-              <Button
+                <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full bg-white/20 hover:bg-white/30 text-gray-500 bg-blue-200"
+                  className="rounded-full bg-muted hover:bg-muted/80 text-foreground"
                   onClick={() => setExpanded(!expanded)}
                 >
                   {expanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                 </Button>
-                
+
               </div>
             </div>
           </motion.div>

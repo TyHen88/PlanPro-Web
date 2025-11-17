@@ -12,7 +12,7 @@ import TripDetailsModal from "./TripsDetailModal"
 import TripModal from "./TripsModal"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { tripsService } from "@/service/trips.service"
-import toast from "react-hot-toast"
+import toast from "sonner"
 import LandingSpinner from "@/components/shared/LandingSpinner"
 
 // Types matching API structure
@@ -77,14 +77,14 @@ const tripStatuses: TripStatus[] = [
 
 // Error Component
 const ErrorMessage = ({ message, onRetry }: { message: string; onRetry?: () => void }) => (
-  <div className="text-center py-12 bg-red-50 rounded-xl border border-red-200">
-    <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
-      <Plane className="h-8 w-8 text-red-400" />
+  <div className="text-center py-12 bg-destructive/10 dark:bg-destructive/20 rounded-xl border border-destructive/20 dark:border-destructive/30">
+    <div className="w-16 h-16 mx-auto bg-destructive/20 dark:bg-destructive/30 rounded-full flex items-center justify-center mb-4">
+      <Plane className="h-8 w-8 text-destructive" />
     </div>
-    <h3 className="text-lg font-medium text-red-900 mb-2">Error Loading Trips</h3>
-    <p className="text-red-600 mb-4">{message}</p>
+    <h3 className="text-lg font-medium text-destructive mb-2">Error Loading Trips</h3>
+    <p className="text-destructive/80 mb-4">{message}</p>
     {onRetry && (
-      <Button onClick={onRetry} variant="outline" className="border-red-300 text-red-600">
+      <Button onClick={onRetry} variant="outline" className="border-destructive/30 text-destructive hover:bg-destructive/10">
         Try Again
       </Button>
     )}
@@ -103,11 +103,11 @@ const StatCard = ({
   color: string
   bgColor: string
 }) => (
-  <div className="bg-white bg-opacity-70 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-white flex items-center">
+  <div className="bg-card/70 dark:bg-card/50 backdrop-blur-sm rounded-lg px-4 py-3 shadow-sm border border-border flex items-center">
     <div className={`w-8 h-8 rounded-full ${bgColor} flex items-center justify-center mr-3`}>
       <span className={`${color} font-semibold`}>{value}</span>
     </div>
-    <span className="text-gray-700">{label}</span>
+    <span className="text-foreground">{label}</span>
   </div>
 )
 
@@ -252,7 +252,7 @@ const TripPage = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-gray-50 max-h-screen overflow-auto">
+      <div className="bg-background max-h-screen overflow-auto">
         <div className="mx-auto p-4">
           <LandingSpinner />
         </div>
@@ -262,7 +262,7 @@ const TripPage = () => {
 
   if (error) {
     return (
-      <div className="bg-gray-50 max-h-screen overflow-auto">
+      <div className="bg-background max-h-screen overflow-auto">
         <div className="mx-auto p-4">
           <ErrorMessage message="Unable to load trips. Please try again." onRetry={refetch} />
         </div>
@@ -271,21 +271,21 @@ const TripPage = () => {
   }
 
   return (
-    <div className="bg-gray-50 max-h-screen overflow-auto">
+    <div className="bg-background max-h-screen overflow-auto">
       <div className="mx-auto p-4">
         {/* Header Section */}
         <div className="mb-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 rounded-xl"></div>
-          <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-teal-50 rounded-xl p-6 relative shadow-lg border border-white" style={{ zIndex: 1 }}>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-400 to-teal-400 opacity-10 dark:opacity-20 rounded-xl"></div>
+          <div className="bg-gradient-to-r from-blue-50/80 dark:from-blue-950/30 via-purple-50/80 dark:via-purple-950/30 to-teal-50/80 dark:to-teal-950/30 rounded-xl p-6 relative shadow-lg border border-border" style={{ zIndex: 1 }}>
             {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 translate-x-1/3 -translate-y-1/3"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 -translate-x-1/3 translate-y-1/3"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full opacity-5 dark:opacity-10 translate-x-1/3 -translate-y-1/3"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full opacity-5 dark:opacity-10 -translate-x-1/3 translate-y-1/3"></div>
 
             <div className="relative z-10">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 dark:from-blue-400 dark:via-purple-400 dark:to-teal-400 bg-clip-text text-transparent mb-2">
                 Trip Planner
               </h1>
-              <div className="text-gray-600 text-sm mb-4">Dashboard • Trips</div>
+              <div className="text-muted-foreground text-sm mb-4">Dashboard • Trips</div>
               <div className="flex flex-wrap gap-4 text-sm">
                 <StatCard
                   value={statistics.totalTrips}
@@ -320,9 +320,9 @@ const TripPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white gap-4">
-            <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+        <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center p-6 border-b border-border bg-gradient-to-r from-muted/50 to-card gap-4">
+            <h2 className="text-xl font-semibold text-foreground flex items-center">
               <span className="bg-gradient-to-r from-blue-500 to-purple-400 w-5 h-5 rounded-md mr-2"></span>
               My Trips
             </h2>
@@ -335,12 +335,12 @@ const TripPage = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full sm:w-64 pl-10"
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                className="rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"
               >
                 <option value="all">All Categories</option>
                 {tripCategories.map((category) => (
@@ -352,7 +352,7 @@ const TripPage = () => {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                className="rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"
               >
                 <option value="all">All Statuses</option>
                 {tripStatuses.map((status) => (
@@ -383,12 +383,12 @@ const TripPage = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                <div className="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Plane className="h-8 w-8 text-gray-400" />
+              <div className="text-center py-12 bg-muted/50 rounded-xl border border-dashed border-border">
+                <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">
+                  <Plane className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No trips found</h3>
-                <p className="text-gray-500 mb-4">
+                <h3 className="text-lg font-medium text-foreground mb-2">No trips found</h3>
+                <p className="text-muted-foreground mb-4">
                   {searchQuery || filterCategory !== "all" || filterStatus !== "all"
                     ? "No trips match your current filters. Try adjusting your search criteria."
                     : "You haven't created any trips yet. Start planning your next adventure!"}

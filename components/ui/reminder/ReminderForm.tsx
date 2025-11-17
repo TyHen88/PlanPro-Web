@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/shared/ui/swtich"
 import { Badge } from "@/components/shared/ui/badge"
 import { DialogFooter } from "@/components/shared/ui/dialog"
-import { Textarea } from "@/components/shared/ui/texarea"
+import { Textarea } from "@/components/shared/ui/textarea"
 import type { Reminder, ReminderCategory, ReminderPriority, ReminderStatus, RecurrenceType } from "./types"
 import { RecurrenceType as RecurrenceTypeEnum, ReminderStatus as ReminderStatusEnum, ReminderPriority as ReminderPriorityEnum } from "./utils"
 import { ReminderCategory as ReminderCategoryEnum } from "./utils"
@@ -239,7 +239,7 @@ export const ReminderForm: React.FC<ReminderFormProps> = ({ reminder, onSave, on
                 <button
                   type="button"
                   onClick={() => handleRemoveTag(tag)}
-                  className="ml-1 rounded-full hover:bg-gray-200 p-0.5"
+                  className="ml-1 rounded-full hover:bg-muted p-0.5 transition-colors"
                 >
                   <X className="h-3 w-3" />
                 </button>

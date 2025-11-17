@@ -17,7 +17,7 @@ interface TypewriterTextProps {
 
 export default function TypewriterText({
     text,
-    speed = 30,
+    speed = 8,
     onComplete,
     className = "",
     children,

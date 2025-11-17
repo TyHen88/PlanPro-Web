@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useRef, useState } from "react"
 import { profileService } from "@/service/profile.service"
-import toast from "react-hot-toast"
+import toast from "sonner"
 import { useMutation } from "@tanstack/react-query"
 import { tripsService } from "@/service/trips.service"
 import { Switch } from "@/components/shared/ui/swtich"
@@ -142,7 +142,7 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
     })
 
     //log error
-    
+
     const watchedImageUrl = watch("imageUrl")
 
     const handleAddDestination = () => {
@@ -164,7 +164,7 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
             toast.error("Failed to remove destination")
         }
     })
-    
+
     const handleRemoveDestination = (index: number) => {
         if (destinationFields.length > 1) {
             if (destinationFields[index].destination_id) {
@@ -223,9 +223,9 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
     }
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4 animate-fadeIn">
             <div
-                className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scaleIn"
+                className="bg-card rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scaleIn border border-border"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
@@ -242,15 +242,15 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="md:col-span-2">
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="title" className="block text-sm font-medium text-foreground mb-1">
                                     Trip Title*
                                 </label>
                                 <Input id="title" {...register("title")} placeholder="Enter trip title" className="w-full" />
-                                {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+                                {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title.message}</p>}
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="description" className="block text-sm font-medium text-foreground mb-1">
                                     Description*
                                 </label>
                                 <textarea
@@ -258,19 +258,19 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     {...register("description")}
                                     placeholder="Describe your trip"
                                     rows={3}
-                                    className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3"
+                                    className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-3"
                                 />
-                                {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
+                                {errors.description && <p className="mt-1 text-sm text-destructive">{errors.description.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="category" className="block text-sm font-medium text-foreground mb-1">
                                     Category*
                                 </label>
                                 <select
                                     id="category"
                                     {...register("category")}
-                                    className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                    className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"
                                 >
                                     <option value="">Select category</option>
                                     {tripCategories.map((category) => (
@@ -279,17 +279,17 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </option>
                                     ))}
                                 </select>
-                                {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>}
+                                {errors.category && <p className="mt-1 text-sm text-destructive">{errors.category.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="status" className="block text-sm font-medium text-foreground mb-1">
                                     Status*
                                 </label>
                                 <select
                                     id="status"
                                     {...register("status")}
-                                    className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                    className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"
                                 >
                                     <option value="">Select status</option>
                                     {tripStatuses.map((status) => (
@@ -298,27 +298,27 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </option>
                                     ))}
                                 </select>
-                                {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>}
+                                {errors.status && <p className="mt-1 text-sm text-destructive">{errors.status.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="startDate" className="block text-sm font-medium text-foreground mb-1">
                                     Start Date*
                                 </label>
                                 <Input id="startDate" type="date" {...register("startDate")} className="w-full" />
-                                {errors.startDate && <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>}
+                                {errors.startDate && <p className="mt-1 text-sm text-destructive">{errors.startDate.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="endDate" className="block text-sm font-medium text-foreground mb-1">
                                     End Date*
                                 </label>
                                 <Input id="endDate" type="date" {...register("endDate")} className="w-full" />
-                                {errors.endDate && <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>}
+                                {errors.endDate && <p className="mt-1 text-sm text-destructive">{errors.endDate.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="budget" className="block text-sm font-medium text-foreground mb-1">
                                     Budget*
                                 </label>
                                 <Input
@@ -329,17 +329,17 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     step="0.01"
                                     className="w-full"
                                 />
-                                {errors.budget && <p className="mt-1 text-sm text-red-600">{errors.budget.message}</p>}
+                                {errors.budget && <p className="mt-1 text-sm text-destructive">{errors.budget.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="currency" className="block text-sm font-medium text-foreground mb-1">
                                     Currency*
                                 </label>
                                 <select
                                     id="currency"
                                     {...register("currency")}
-                                    className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                    className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2"
                                 >
                                     {Object.entries(currencyList).map(([key, value]) => (
                                         <option key={key} value={key}>
@@ -347,11 +347,11 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </option>
                                     ))}
                                 </select>
-                                {errors.currency && <p className="mt-1 text-sm text-red-600">{errors.currency.message}</p>}
+                                {errors.currency && <p className="mt-1 text-sm text-destructive">{errors.currency.message}</p>}
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="location" className="block text-sm font-medium text-foreground mb-1">
                                     Location*
                                 </label>
                                 <Input
@@ -360,11 +360,11 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     placeholder="e.g., Paris, France or Google Maps URL"
                                     className="w-full"
                                 />
-                                {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>}
+                                {errors.location && <p className="mt-1 text-sm text-destructive">{errors.location.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="accommodation" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="accommodation" className="block text-sm font-medium text-foreground mb-1">
                                     Accommodation*
                                 </label>
                                 <Input
@@ -373,11 +373,11 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     placeholder="Hotels, Airbnb, etc."
                                     className="w-full"
                                 />
-                                {errors.accommodation && <p className="mt-1 text-sm text-red-600">{errors.accommodation.message}</p>}
+                                {errors.accommodation && <p className="mt-1 text-sm text-destructive">{errors.accommodation.message}</p>}
                             </div>
 
                             <div>
-                                <label htmlFor="transportation" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="transportation" className="block text-sm font-medium text-foreground mb-1">
                                     Transportation*
                                 </label>
                                 <Input
@@ -386,11 +386,11 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     placeholder="Flights, rental car, etc."
                                     className="w-full"
                                 />
-                                {errors.transportation && <p className="mt-1 text-sm text-red-600">{errors.transportation.message}</p>}
+                                {errors.transportation && <p className="mt-1 text-sm text-destructive">{errors.transportation.message}</p>}
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="travelers" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="travelers" className="block text-sm font-medium text-foreground mb-1">
                                     Travelers* (comma separated)
                                 </label>
                                 <Input
@@ -399,11 +399,11 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     placeholder="John Doe, Jane Smith"
                                     className="w-full"
                                 />
-                                {errors.travelers && <p className="mt-1 text-sm text-red-600">{errors.travelers.message}</p>}
+                                {errors.travelers && <p className="mt-1 text-sm text-destructive">{errors.travelers.message}</p>}
                             </div>
 
                             <div className="md:col-span-2">
-                                <label htmlFor="remarks" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="remarks" className="block text-sm font-medium text-foreground mb-1">
                                     Notes
                                 </label>
                                 <textarea
@@ -411,14 +411,14 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     {...register("remarks")}
                                     placeholder="Additional notes, reminders, etc."
                                     rows={2}
-                                    className="w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3"
+                                    className="w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-3"
                                 />
                             </div>
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
-                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <label className="block text-sm font-medium text-foreground mb-1">Trip Image</label>
+                            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-md">
                                 <div className="space-y-1 text-center">
                                     {watchedImageUrl ? (
                                         <div className="relative w-full h-48">
@@ -432,7 +432,7 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </div>
                                     ) : (
                                         <svg
-                                            className="mx-auto h-12 w-12 text-gray-400"
+                                            className="mx-auto h-12 w-12 text-muted-foreground"
                                             stroke="currentColor"
                                             fill="none"
                                             viewBox="0 0 48 48"
@@ -446,10 +446,10 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                             />
                                         </svg>
                                     )}
-                                    <div className="flex text-sm text-gray-600">
+                                    <div className="flex text-sm text-muted-foreground">
                                         <label
                                             htmlFor="file-upload"
-                                            className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500"
+                                            className="relative cursor-pointer bg-background rounded-md font-medium text-primary hover:text-primary/80"
                                         >
                                             <span>Upload a file</span>
                                             <input
@@ -465,37 +465,37 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </label>
                                         <p className="pl-1">or drag and drop</p>
                                     </div>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                    <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Destinations Section */}
-                        <div className="border-t border-gray-200 pt-6">
+                        <div className="border-t border-border pt-6">
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-gray-800">Destinations & Activities</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Destinations & Activities</h3>
                                 <Button
                                     type="button"
                                     size="sm"
                                     variant="outline"
                                     onClick={handleAddDestination}
-                                    className="text-blue-600 border-blue-200"
+                                    className="text-primary border-primary/20 hover:bg-primary/10"
                                 >
                                     <Plus className="h-4 w-4 mr-1" /> Add Destination
                                 </Button>
                             </div>
 
-                            {errors.destinations && <p className="mb-4 text-sm text-red-600">{errors.destinations.message}</p>}
+                            {errors.destinations && <p className="mb-4 text-sm text-destructive">{errors.destinations.message}</p>}
 
                             <div className="space-y-6">
                                 {destinationFields.map((destination, destinationIndex) => (
-                                    <div key={destination.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
+                                    <div key={destination.id} className="bg-muted/50 p-4 rounded-lg border border-border relative">
                                         <div className="absolute top-2 right-2">
                                             {destinationFields.length > 1 && (
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveDestination(destinationIndex)}
-                                                    className="text-gray-400 hover:text-red-500 p-1"
+                                                    className="text-muted-foreground hover:text-destructive p-1"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>
@@ -504,26 +504,26 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
 
                                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                                             <div className="md:col-span-3">
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Destination Name*</label>
+                                                <label className="block text-sm font-medium text-foreground mb-1">Destination Name*</label>
                                                 <Input
                                                     {...register(`destinations.${destinationIndex}.destinationName`)}
                                                     placeholder="e.g., Paris, France"
                                                 />
                                                 {errors.destinations?.[destinationIndex]?.destinationName && (
-                                                    <p className="mt-1 text-sm text-red-600">
+                                                    <p className="mt-1 text-sm text-destructive">
                                                         {errors.destinations[destinationIndex]?.destinationName?.message}
                                                     </p>
                                                 )}
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Days*</label>
+                                                <label className="block text-sm font-medium text-foreground mb-1">Days*</label>
                                                 <Input
                                                     type="number"
                                                     {...register(`destinations.${destinationIndex}.days`, { valueAsNumber: true })}
                                                     min="1"
                                                 />
                                                 {errors.destinations?.[destinationIndex]?.days && (
-                                                    <p className="mt-1 text-sm text-red-600">
+                                                    <p className="mt-1 text-sm text-destructive">
                                                         {errors.destinations[destinationIndex]?.days?.message}
                                                     </p>
                                                 )}
@@ -531,14 +531,14 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Activities*</label>
+                                            <label className="block text-sm font-medium text-foreground mb-2">Activities*</label>
                                             <Input
                                                 {...register(`destinations.${destinationIndex}.activities`)}
                                                 placeholder="e.g., Visit Eiffel Tower, Louvre Museum, Seine River Cruise"
                                                 className="w-full"
                                             />
                                             {errors.destinations?.[destinationIndex]?.activities && (
-                                                <p className="mt-1 text-sm text-red-600">
+                                                <p className="mt-1 text-sm text-destructive">
                                                     {errors.destinations[destinationIndex]?.activities?.message}
                                                 </p>
                                             )}
@@ -547,14 +547,14 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                 ))}
                             </div>
                         </div>
-                        <div className="md:col-span-2 flex flex-col gap-2 bg-gradient-to-br from-blue-50 via-purple-50 to-blue-100 rounded-xl p-4 shadow-inner border border-blue-100">
+                        <div className="md:col-span-2 flex flex-col gap-2 bg-gradient-to-br from-blue-50/50 dark:from-blue-950/30 via-purple-50/50 dark:via-purple-950/30 to-blue-100/50 dark:to-blue-950/40 rounded-xl p-4 shadow-inner border border-primary/20">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-semibold text-blue-700 flex items-center">
-                                        <Info className="h-4 w-4 mr-1 text-blue-400" />
+                                    <span className="text-sm font-semibold text-primary flex items-center">
+                                        <Info className="h-4 w-4 mr-1 text-primary/70" />
                                         Add to Calendar
                                     </span>
-                                    <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-100 text-xs text-blue-600 font-medium animate-pulse">
+                                    <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/20 text-xs text-primary font-medium animate-pulse">
                                         New!
                                     </span>
                                 </div>
@@ -564,23 +564,23 @@ const TripModal = ({ trip, onClose, onSave, isNew = false }: TripModalProps) => 
                                     className="scale-110"
                                 />
                             </div>
-                            <div className="mt-2 text-xs text-gray-600 flex items-center gap-2">
+                            <div className="mt-2 text-xs text-muted-foreground flex items-center gap-2">
                                 <span>
                                     {watch("isCalendarEvent")
                                         ? "This trip will be added to your calendar and you'll get reminders."
                                         : "Enable to sync this trip with your calendar and receive smart notifications."}
                                 </span>
                                 {watch("isCalendarEvent") && (
-                                    <span className="inline-flex items-center gap-1 text-green-600 font-medium">
+                                    <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400 font-medium">
                                         <svg className="h-4 w-4 animate-bounce" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" /></svg>
                                         Synced!
                                     </span>
                                 )}
                             </div>
                             {watch("isCalendarEvent") && (
-                                <div className="mt-3 flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg p-2">
-                                    <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M8 7V3M16 7V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    <span className="text-xs text-blue-700">
+                                <div className="mt-3 flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-lg p-2">
+                                    <svg className="h-5 w-5 text-primary/70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M8 7V3M16 7V3M4 11h16M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    <span className="text-xs text-foreground">
                                         Calendar event will include trip title, dates, and location.
                                     </span>
                                 </div>

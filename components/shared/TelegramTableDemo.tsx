@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import TelegramTable, { TelegramData } from './TelegramTable'
 import { Button } from '@/components/shared/ui/Button'
-import { toast } from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const TelegramTableDemo: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<TelegramData[]>([])
@@ -41,7 +41,7 @@ const TelegramTableDemo: React.FC = () => {
             A fully featured table built with TanStack Table
           </p>
         </div>
-        
+
         {selectedRows.length > 0 && (
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">

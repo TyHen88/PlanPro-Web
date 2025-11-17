@@ -24,7 +24,7 @@ export default function ChatMessage({
     children,
     className = "",
     typewriterEnabled = true,
-    typewriterSpeed = 30,
+    typewriterSpeed = 8,
     onTypewriterComplete
 }: ChatMessageProps) {
     const formatTime = (timestamp?: number) => {
@@ -44,10 +44,10 @@ export default function ChatMessage({
                 <div
                     className={
                         (isUser
-                            ? "bg-blue-500 text-white ml-12 rounded-br-2xl rounded-tl-2xl rounded-bl-md"
+                            ? "bg-primary text-primary-foreground ml-12 rounded-br-2xl rounded-tl-2xl rounded-bl-md"
                             : isSystem
-                                ? "bg-yellow-100 text-yellow-800 mr-12 rounded-lg border border-yellow-200"
-                                : "bg-gray-100 text-gray-900 mr-12 rounded-bl-2xl rounded-tr-2xl rounded-br-md"
+                                ? "bg-yellow-500/10 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-300 mr-12 rounded-lg border border-yellow-500/20 dark:border-yellow-500/30"
+                                : "bg-muted/50 dark:bg-muted/30 text-foreground mr-12 rounded-bl-2xl rounded-tr-2xl rounded-br-md border border-border"
                         ) +
                         " px-4 py-2 text-sm inline-block shadow-md break-words"
                     }
@@ -81,7 +81,7 @@ export default function ChatMessage({
                     )}
                 </div>
                 {timestamp && (
-                    <div className={`text-xs text-gray-500 mt-1 ${isUser ? "text-right" : "text-left"}`}>
+                    <div className={`text-xs text-muted-foreground mt-1 ${isUser ? "text-right" : "text-left"}`}>
                         {formatTime(timestamp)}
                     </div>
                 )}

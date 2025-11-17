@@ -66,9 +66,8 @@ export default function CalendarSection() {
               {dates.map((date, i) => (
                 <div
                   key={i}
-                  className={`p-2 border-r border-b border-gray-200 min-h-[120px] ${
-                    i === 2 ? "bg-teal-50 border-teal-200" : ""
-                  }`}
+                  className={`p-2 border-r border-b border-gray-200 min-h-[120px] ${i === 2 ? "bg-teal-50 border-teal-200" : ""
+                    }`}
                 >
                   <div className="flex justify-between items-center mb-2">
                     <span className={`text-sm ${i === 2 ? "font-bold text-teal-500" : "text-gray-600"}`}>{date}</span>

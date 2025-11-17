@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useFormContextState } from "@/lib/hooks/useFromState";
 import useSignUpMutation from "@/lib/hooks/useSignUpMutation";
 import { PasswordUtils } from "@/utils/PasswordUtils";
-import toast from "react-hot-toast";
+import toast from "sonner";
 import { initiateGoogleRegister } from "@/utils/googleOAuth";
 
 interface RegisterFormValues {
@@ -91,11 +91,11 @@ export default function RegisterPage() {
     if (!mounted) return null;
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50 via-white to-yellow-50">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-orange-50/50 dark:from-orange-950/20 via-background to-yellow-50/50 dark:to-yellow-950/20">
             {/* Background Decorations */}
-            <div className="fixed top-0 right-0 w-64 h-64 bg-orange-400 rounded-full opacity-10 translate-x-1/2 -translate-y-1/2 blur-3xl" />
-            <div className="fixed top-1/3 left-0 w-96 h-96 bg-yellow-400 rounded-full opacity-10 -translate-x-1/2 blur-3xl" />
-            <div className="fixed bottom-0 right-1/3 w-80 h-80 bg-green-400 rounded-full opacity-10 translate-y-1/2 blur-3xl" />
+            <div className="fixed top-0 right-0 w-64 h-64 bg-orange-400 rounded-full opacity-10 dark:opacity-20 translate-x-1/2 -translate-y-1/2 blur-3xl" />
+            <div className="fixed top-1/3 left-0 w-96 h-96 bg-yellow-400 rounded-full opacity-10 dark:opacity-20 -translate-x-1/2 blur-3xl" />
+            <div className="fixed bottom-0 right-1/3 w-80 h-80 bg-green-400 rounded-full opacity-10 dark:opacity-20 translate-y-1/2 blur-3xl" />
 
             <header className="container mx-auto px-4 py-6 relative z-10">
                 <Link href="/" className="flex items-center gap-2 group">
@@ -114,12 +114,12 @@ export default function RegisterPage() {
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 via-yellow-400 to-green-400 rounded-2xl opacity-50 blur-lg" />
 
-                        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-white relative z-10">
+                        <div className="bg-card/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-border relative z-10">
                             <div className="text-center mb-8">
                                 <div className="flex justify-center mb-4">
                                     <div className="relative">
                                         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-orange-400 to-yellow-400 animate-pulse blur-md" />
-                                        <div className="relative bg-white rounded-full p-3">
+                                        <div className="relative bg-card rounded-full p-3">
                                             <Sparkles className="h-8 w-8 text-orange-500" />
                                         </div>
                                     </div>
@@ -127,12 +127,12 @@ export default function RegisterPage() {
                                 <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
                                     Create your account
                                 </h1>
-                                <p className="text-gray-600">Start planning smarter with PlanPro</p>
-                                <p className="text-gray-600">Already have an account? <Link href="/login" className="text-orange-500 hover:text-orange-600">Login</Link></p>
+                                <p className="text-muted-foreground">Start planning smarter with PlanPro</p>
+                                <p className="text-muted-foreground">Already have an account? <Link href="/login" className="text-primary hover:text-primary/80">Login</Link></p>
                             </div>
 
                             {error && (
-                                <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+                                <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg text-sm">
                                     <p>{error}</p>
                                 </div>
                             )}
@@ -142,7 +142,7 @@ export default function RegisterPage() {
                                 <div className="flex space-x-4">
                                     {/* First Name */}
                                     <div className="flex-1 space-y-2">
-                                        <label htmlFor="first_name" className="block text-sm font-medium text-gray-700">
+                                        <label htmlFor="first_name" className="block text-sm font-medium text-foreground">
                                             First Name
                                         </label>
                                         <div className="relative group">
@@ -153,14 +153,14 @@ export default function RegisterPage() {
                                                 type="text"
                                                 id="first_name"
                                                 placeholder="First Name"
-                                                className="pl-10 border-transparent bg-white relative z-10"
+                                                className="pl-10 border-transparent bg-background relative z-10"
                                                 {...register("first_name", { required: "First name is required" })}
                                             />
                                         </div>
                                     </div>
                                     {/* Last Name */}
                                     <div className="flex-1 space-y-2">
-                                        <label htmlFor="last_name" className="block text-sm font-medium text-gray-700">
+                                        <label htmlFor="last_name" className="block text-sm font-medium text-foreground">
                                             Last Name
                                         </label>
                                         <div className="relative group">
@@ -171,14 +171,14 @@ export default function RegisterPage() {
                                                 type="text"
                                                 id="last_name"
                                                 placeholder="Last Name"
-                                                className="pl-10 border-transparent bg-white relative z-10"
+                                                className="pl-10 border-transparent bg-background relative z-10"
                                                 {...register("last_name", { required: "Last name is required" })}
                                             />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="name" className="block text-sm font-medium text-foreground">
                                         Username
                                     </label>
                                     <div className="relative group">
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                                         <Input
                                             type="text"
                                             placeholder="John Doe"
-                                            className="pl-10 border-transparent bg-white relative z-10"
+                                            className="pl-10 border-transparent bg-background relative z-10"
                                             {...register("user_name", { required: "Full name is required" })}
                                         />
                                     </div>
@@ -196,7 +196,7 @@ export default function RegisterPage() {
 
                                 {/* Email */}
                                 <div className="space-y-2">
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="email" className="block text-sm font-medium text-foreground">
                                         Email
                                     </label>
                                     <div className="relative group">
@@ -206,7 +206,7 @@ export default function RegisterPage() {
                                         <Input
                                             type="email"
                                             placeholder="you@example.com"
-                                            className="pl-10 border-transparent bg-white relative z-10"
+                                            className="pl-10 border-transparent bg-background relative z-10"
                                             {...register("email", { required: "Email is required" })}
                                         />
                                     </div>
@@ -215,7 +215,7 @@ export default function RegisterPage() {
                                 {/* Phone Number */}
 
                                 <div className="space-y-2">
-                                    <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="phone_number" className="block text-sm font-medium text-foreground">
                                         Phone Number
                                     </label>
                                 </div>
@@ -223,13 +223,13 @@ export default function RegisterPage() {
                                 <Input
                                     type="tel"
                                     placeholder="1234567890"
-                                    className="pl-10 border-transparent bg-white relative z-10"
+                                    className="pl-10 border-transparent bg-background relative z-10"
                                     {...register("phone_number", { required: "Phone number is required" })}
                                 />
 
                                 {/* Password */}
                                 <div className="space-y-2">
-                                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                    <label htmlFor="password" className="block text-sm font-medium text-foreground">
                                         Password
                                     </label>
                                     <div className="relative group">
@@ -239,7 +239,7 @@ export default function RegisterPage() {
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="••••••••"
-                                            className="pl-10 pr-10 border-transparent bg-white relative z-10"
+                                            className="pl-10 pr-10 border-transparent bg-background relative z-10"
                                             {...register("password", { required: "Password is required" })}
                                         />
                                         <button
@@ -247,22 +247,22 @@ export default function RegisterPage() {
                                             onClick={() => setShowPassword(!showPassword)}
                                             className="absolute inset-y-0 right-0 pr-3 flex items-center z-10"
                                         >
-                                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                            {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
                                         </button>
                                     </div>
 
                                     {/* Password rules */}
-                                    <div className="mt-2 space-y-1 text-xs text-gray-500">
+                                    <div className="mt-2 space-y-1 text-xs text-muted-foreground">
                                         <div className="flex items-center">
-                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${password.length >= 8 ? "text-green-500" : "text-gray-300"}`} />
+                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${password.length >= 8 ? "text-green-500" : "text-muted-foreground/50"}`} />
                                             At least 8 characters
                                         </div>
                                         <div className="flex items-center">
-                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${/[A-Z]/.test(password) ? "text-green-500" : "text-gray-300"}`} />
+                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${/[A-Z]/.test(password) ? "text-green-500" : "text-muted-foreground/50"}`} />
                                             At least one uppercase letter
                                         </div>
                                         <div className="flex items-center">
-                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${/[0-9]/.test(password) ? "text-green-500" : "text-gray-300"}`} />
+                                            <CheckCircle className={`h-3 w-3 mr-1.5 ${/[0-9]/.test(password) ? "text-green-500" : "text-muted-foreground/50"}`} />
                                             At least one number
                                         </div>
                                     </div>
@@ -280,10 +280,10 @@ export default function RegisterPage() {
                             <div className="mt-8">
                                 <div className="relative">
                                     <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-gray-200"></div>
+                                        <div className="w-full border-t border-border"></div>
                                     </div>
                                     <div className="relative flex justify-center text-sm">
-                                        <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                                        <span className="px-2 bg-card text-muted-foreground">Or continue with</span>
                                     </div>
                                 </div>
 
@@ -291,9 +291,9 @@ export default function RegisterPage() {
                                     <button
                                         type="button"
                                         onClick={initiateGoogleRegister}
-                                        className="w-full relative group overflow-hidden border border-gray-300 hover:border-gray-400 rounded-lg py-2.5 transition-all duration-300"
+                                        className="w-full relative group overflow-hidden border border-border hover:border-border/80 rounded-lg py-2.5 transition-all duration-300"
                                     >
-                                        <span className="relative z-10 flex items-center justify-center text-gray-700">
+                                        <span className="relative z-10 flex items-center justify-center text-foreground">
                                             <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                                                 <path
                                                     fill="#4285F4"

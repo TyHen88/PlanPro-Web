@@ -54,7 +54,7 @@ const TripCard = ({ trip, onTripClick }: TripCardProps) => {
 
     return (
         <div
-            className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden"
+            className="bg-card rounded-xl shadow-sm border border-border hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden"
             onClick={() => onTripClick(trip)}
         >
             {/* Trip Image */}
@@ -85,16 +85,16 @@ const TripCard = ({ trip, onTripClick }: TripCardProps) => {
 
             {/* Trip Details */}
             <div className="p-4">
-                <p className="text-sm text-gray-600 line-clamp-2 mb-4">{trip.description}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{trip.description}</p>
 
                 <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center text-gray-500 text-xs">
+                    <div className="flex items-center text-muted-foreground text-xs">
                         <Calendar size={12} className="mr-1" />
                         <span>
                             {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
                         </span>
                     </div>
-                    <div className="flex items-center text-gray-500 text-xs">
+                    <div className="flex items-center text-muted-foreground text-xs">
                         <Clock size={12} className="mr-1" />
                         <span>{tripDuration} days</span>
                     </div>
@@ -103,12 +103,12 @@ const TripCard = ({ trip, onTripClick }: TripCardProps) => {
                 <div className="flex justify-between items-center">
                     <div
                         className={`text-xs font-medium ${daysUntilTrip < 0
-                            ? "text-gray-500"
+                            ? "text-muted-foreground"
                             : daysUntilTrip === 0
-                                ? "text-green-600"
+                                ? "text-green-600 dark:text-green-400"
                                 : daysUntilTrip <= 7
-                                    ? "text-orange-600"
-                                    : "text-blue-600"
+                                    ? "text-orange-600 dark:text-orange-400"
+                                    : "text-primary"
                             }`}
                     >
                         {daysUntilTrip < 0
@@ -117,21 +117,21 @@ const TripCard = ({ trip, onTripClick }: TripCardProps) => {
                                 ? "Departing today!"
                                 : `${daysUntilTrip} days until departure`}
                     </div>
-                    <div className="text-sm font-semibold text-gray-800">{trip.budget} {trip.currency}</div>
+                    <div className="text-sm font-semibold text-foreground">{trip.budget} {trip.currency}</div>
                 </div>
 
                 {/* Destinations Preview */}
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="mt-4 pt-4 border-t border-border">
                     <div className="flex items-center gap-1 flex-wrap">
                         {trip.location ? (
-                            <div className="flex items-center bg-gray-100 rounded-full px-2 py-0.5 text-xs text-gray-700">
-                                <MapPin className="h-3 w-3 mr-0.5 text-gray-500" />
+                            <div className="flex items-center bg-muted rounded-full px-2 py-0.5 text-xs text-foreground">
+                                <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground" />
                                 {trip.location || 'Unknown Location'}
                             </div>
                         ) : (
-                            <div className="flex items-center bg-gray-100 rounded-full px-2 py-0.5 text-xs text-gray-700">
-                                <MapPin className="h-3 w-3 mr-0.5 text-gray-500" />
-                                <div className="text-xs text-gray-500">No location added</div>
+                            <div className="flex items-center bg-muted rounded-full px-2 py-0.5 text-xs text-foreground">
+                                <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground" />
+                                <div className="text-xs text-muted-foreground">No location added</div>
                             </div>
                         )}
                     </div>

@@ -1,33 +1,36 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/shared/ui/Button"
 import { Input } from "@/components/shared/ui/Input"
-import { User, Mail, Phone, Calendar, Camera, Shield, Palette, Edit, Save, X, User2, Loader2, History } from "lucide-react"
+import { User, Mail, Phone, Calendar, Camera, Shield, Edit, Save, X, User2, Loader2, History } from "lucide-react"
 import Image from "next/image"
 import { Label } from "@/components/shared/ui/label"
 import profile from "@/public/asset/profile.jpg"
 import { profileService } from "@/service/profile.service"
-import toast from "react-hot-toast"
+import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import SettingTap from "@/components/ui/profile/SettingTap"
 import TelegramHistory from "./TelegramHistory"
 import SecurityTap from "./SecurityTap"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shared/ui/tabs"
 
 type Props = {
+    showProfile: boolean
     profile_data: any
     onClose: () => void
     onUpdate?: (updatedData: any) => Promise<any>
 }
 
-const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
+const ProfileContrainer = ({ profile_data, onClose, onUpdate, showProfile }: Props) => {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("personal")
     const [isEditing, setIsEditing] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [fileImage, setFileImage] = useState<File | null>(null)
+
     // Initialize profile data from props or defaults
     const [profileData, setProfileData] = useState({
         username: profile_data?.username || "",
@@ -42,12 +45,9 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
 
     const [editData, setEditData] = useState(profileData)
 
-    const tabs = [
-        { id: "personal", label: "Personal", icon: User },
-        { id: "telegram", label: "Telegram", icon: Mail },
-        { id: "history", label: "History", icon: History },
-        { id: "security", label: "Security", icon: Shield },
-    ]
+    const handleClose = () => {
+        onClose()
+    }
 
     const handleEdit = () => {
         setEditData(profileData)
@@ -108,7 +108,6 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                 setProfileData(editData)
                 setIsEditing(false)
             }
-            console.log("requestData", requestData)
         } catch (error: any) {
             console.error("Error updating profile:", error)
             toast.error("Failed : " + error?.message)
@@ -127,16 +126,11 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
             setFileImage(file)
         }
     }
-    console.log("profileData", profile_data.auth_provider)
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
-            <div
-                className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-scaleIn"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Header */}
-                <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-6 text-white overflow-hidden">
+        <Dialog open={showProfile} onOpenChange={handleClose}>
+            <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
+                <DialogHeader className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 p-6 text-white overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-yellow-500/20"></div>
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
@@ -162,92 +156,85 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                             </div>
 
                             <div className="flex-1">
-                                <h2 className="text-3xl font-bold mb-2">
+                                <DialogTitle className="text-3xl font-bold mb-2 text-white">
                                     {profileData.firstName} {profileData.lastName}
-                                </h2>
-                                <p className="text-white/80 mb-3">@{profileData.username ?? "-"}</p>
+                                </DialogTitle>
+                                <DialogDescription className="text-white/80">
+                                    @{profileData.username ?? "-"}
+                                </DialogDescription>
                             </div>
                         </div>
-                        {
-                            profileData.auth_provider !== "GOOGLE" && (
-                                <>
-                                    {/* Edit/Save/Cancel buttons */}
-                                    {activeTab === "personal" && (
-                                        <div className="flex gap-2">
-                                            {!isEditing ? (
+                        {profileData.auth_provider !== "GOOGLE" && (
+                            <>
+                                {activeTab === "personal" && (
+                                    <div className="flex gap-2">
+                                        {!isEditing ? (
+                                            <Button
+                                                onClick={handleEdit}
+                                                variant="secondary"
+                                                className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                                            >
+                                                <Edit className="w-4 h-4 mr-2" />
+                                                Edit Profile
+                                            </Button>
+                                        ) : (
+                                            <>
                                                 <Button
-                                                    onClick={handleEdit}
+                                                    onClick={handleCancel}
                                                     variant="secondary"
+                                                    disabled={isLoading}
                                                     className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                                                 >
-                                                    <Edit className="w-4 h-4 mr-2" />
-                                                    Edit Profile
+                                                    <X className="w-4 h-4 mr-2" />
+                                                    Cancel
                                                 </Button>
-                                            ) : (
-                                                <>
-                                                    <Button
-                                                        onClick={handleCancel}
-                                                        variant="secondary"
-                                                        disabled={isLoading}
-                                                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                                                    >
-                                                        <X className="w-4 h-4 mr-2" />
-                                                        Cancel
-                                                    </Button>
-                                                    <Button
-                                                        onClick={handleSave}
-                                                        variant="secondary"
-                                                        disabled={isLoading}
-                                                        className="bg-white/90 hover:bg-white text-purple-600 border-0"
-                                                    >
-                                                        {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                                                        {isLoading ? "Saving..." : "Save Changes"}
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
-                                    )}
-                                </>
-                            )
-                        }
-
+                                                <Button
+                                                    onClick={handleSave}
+                                                    variant="secondary"
+                                                    disabled={isLoading}
+                                                    className="bg-white/90 hover:bg-white text-purple-600 border-0"
+                                                >
+                                                    {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                                                    {isLoading ? "Saving..." : "Save Changes"}
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
-                </div>
+                </DialogHeader>
 
-                {/* Tab Navigation */}
-                <div className="border-b border-gray-200">
-                    <nav className="flex">
-                        {tabs.map((tab) => {
-                            const Icon = tab.icon
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    disabled={tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history" && tab.id !== "security"}
-                                    className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors relative 
-                    ${activeTab === tab.id ? "text-teal-600" : "text-gray-500 hover:text-gray-700"}
-                    ${tab.id !== "personal" && tab.id !== "telegram" && tab.id !== "history" && tab.id !== "security" ? "opacity-50 cursor-not-allowed" : ""}
-                  `}
-                                >
-                                    <Icon className="w-4 h-4" />
-                                    {tab.label}
-                                    {activeTab === tab.id && (
-                                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600"></div>
-                                    )}
-                                </button>
-                            )
-                        })}
-                    </nav>
-                </div>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+                    <div className="border-b border-border px-6">
+                        <TabsList className="bg-transparent h-auto p-0">
+                            <TabsTrigger value="personal" className="flex items-center gap-2 px-6 py-4">
+                                <User className="w-4 h-4" />
+                                Personal
+                            </TabsTrigger>
+                            <TabsTrigger value="telegram" className="flex items-center gap-2 px-6 py-4">
+                                <Mail className="w-4 h-4" />
+                                Telegram
+                            </TabsTrigger>
+                            <TabsTrigger value="history" className="flex items-center gap-2 px-6 py-4">
+                                <History className="w-4 h-4" />
+                                History
+                            </TabsTrigger>
+                            <TabsTrigger value="security" className="flex items-center gap-2 px-6 py-4">
+                                <Shield className="w-4 h-4" />
+                                Security
+                            </TabsTrigger>
+                        </TabsList>
+                    </div>
 
-                <div className="p-6 max-h-[calc(90vh-280px)] overflow-y-auto custom-scrollbar">
-                    {activeTab === "personal" && (
-                        <div className="space-y-6">
+                    <div className="flex-1 overflow-y-auto p-6">
+                        <TabsContent value="personal" className="mt-0 space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* First Name */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <User className="w-4 h-4 text-purple-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <User className="w-4 h-4 text-primary" />
                                         First Name
                                     </Label>
                                     {isEditing ? (
@@ -255,17 +242,17 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             placeholder="Enter your first name"
                                             value={editData.firstName}
                                             onChange={(e) => updateEditData("firstName", e.target.value)}
-                                            className="border-purple-200 focus:border-purple-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.firstName ?? "-"}</div>
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">{profileData.firstName ?? "-"}</div>
                                     )}
                                 </div>
 
                                 {/* Last Name */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <User className="w-4 h-4 text-purple-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <User className="w-4 h-4 text-primary" />
                                         Last Name
                                     </Label>
                                     {isEditing ? (
@@ -273,17 +260,17 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             placeholder="Enter your last name"
                                             value={editData.lastName}
                                             onChange={(e) => updateEditData("lastName", e.target.value)}
-                                            className="border-purple-200 focus:border-purple-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.lastName ?? "-"}</div>
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">{profileData.lastName ?? "-"}</div>
                                     )}
                                 </div>
 
                                 {/* Email */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <Mail className="w-4 h-4 text-blue-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <Mail className="w-4 h-4 text-primary" />
                                         Email
                                     </Label>
                                     {isEditing ? (
@@ -292,17 +279,17 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             type="email"
                                             value={editData.email}
                                             onChange={(e) => updateEditData("email", e.target.value)}
-                                            className="border-blue-200 focus:border-blue-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.email ?? "-"}</div>
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">{profileData.email ?? "-"}</div>
                                     )}
                                 </div>
 
                                 {/* Phone */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <Phone className="w-4 h-4 text-green-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <Phone className="w-4 h-4 text-primary" />
                                         Phone Number (Optional)
                                     </Label>
                                     {isEditing ? (
@@ -311,17 +298,17 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             type="tel"
                                             value={editData.phone}
                                             onChange={(e) => updateEditData("phone", e.target.value)}
-                                            className="border-green-200 focus:border-green-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.phone === null ? "-" : profileData.phone}</div>
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">{profileData.phone === null ? "-" : profileData.phone}</div>
                                     )}
                                 </div>
 
                                 {/* Username */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <User2 className="w-4 h-4 text-red-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <User2 className="w-4 h-4 text-primary" />
                                         Username
                                     </Label>
                                     {isEditing ? (
@@ -329,17 +316,17 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             placeholder="Enter your username"
                                             value={editData.username}
                                             onChange={(e) => updateEditData("username", e.target.value)}
-                                            className="border-red-200 focus:border-red-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">{profileData.username ?? "-"}</div>
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">{profileData.username ?? "-"}</div>
                                     )}
                                 </div>
 
                                 {/* Birthday */}
                                 <div className="space-y-2">
-                                    <Label className="flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-orange-500" />
+                                    <Label className="flex items-center gap-2 text-foreground">
+                                        <Calendar className="w-4 h-4 text-primary" />
                                         Birthday
                                     </Label>
                                     {isEditing ? (
@@ -348,44 +335,36 @@ const ProfileContrainer = ({ profile_data, onClose, onUpdate }: Props) => {
                                             type="date"
                                             value={editData.birthday}
                                             onChange={(e) => updateEditData("birthday", e.target.value)}
-                                            className="border-orange-200 focus:border-orange-500"
+                                            className="border-input focus:border-primary"
                                         />
                                     ) : (
-                                        <div className="p-3 bg-gray-50 rounded-md border">
+                                        <div className="p-3 bg-muted rounded-md border border-border text-foreground">
                                             {new Date(profileData.birthday).toLocaleDateString("en-US", {
                                                 year: "numeric",
                                                 month: "long",
                                                 day: "numeric",
-                                            }) === null ? new Date(profileData.birthday).toLocaleDateString("en-US", {
-                                                year: "numeric",
-                                                month: "long",
-                                                day: "numeric",
-                                            }) : "-"}
+                                            }) || "-"}
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        </div>
-                    )}
-                    {activeTab === "telegram" && (
-                        <SettingTap />
-                    )}
-                    {activeTab === "history" && (
-                        <TelegramHistory />
-                    )}
-                    {activeTab === "security" && (
-                        <SecurityTap data={profile_data} />
-                    )}
+                        </TabsContent>
 
-                    <div className="mt-8 flex justify-end gap-3">
-                        <Button variant="outline" onClick={onClose} disabled={isLoading}>
-                            Close
-                        </Button>
+                        <TabsContent value="telegram" className="mt-0">
+                            <SettingTap />
+                        </TabsContent>
 
+                        <TabsContent value="history" className="mt-0">
+                            <TelegramHistory />
+                        </TabsContent>
+
+                        <TabsContent value="security" className="mt-0">
+                            <SecurityTap data={profile_data} />
+                        </TabsContent>
                     </div>
-                </div>
-            </div>
-        </div>
+                </Tabs>
+            </DialogContent>
+        </Dialog>
     )
 }
 

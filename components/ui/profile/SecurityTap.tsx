@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Button } from "@/components/shared/ui/Button";
 import { Input } from "@/components/shared/ui/Input";
-import { Eye, EyeOff, X, User } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/service/auth.service";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { SetUpPasswordRequest, UpdatePasswordRequest } from "@/lib/types/auth";
 import { useRouter } from "next/router";
 import { Path } from "@/utils/enum";
 import { signOut } from "next-auth/react";
 import { PasswordUtils } from "@/utils/PasswordUtils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog";
+import { Label } from "@/components/shared/ui/label";
 
 type Props = {
     data: any
@@ -141,9 +143,9 @@ export default function SecurityTap({ data }: Props) {
     return (
         <>
             {/* Password Section */}
-            <section className="bg-muted rounded-lg p-6 flex items-center justify-between">
+            <section className="bg-muted rounded-lg p-6 flex items-center justify-between border border-border">
                 <div>
-                    <div className="text-base font-semibold mb-1">Password</div>
+                    <div className="text-base font-semibold mb-1 text-foreground">Password</div>
                     <div className="text-sm text-muted-foreground">{!data?.is_pass ? "Setup password for your account" : "Update password for your account"}</div>
                 </div>
                 <Button variant="outline" onClick={() => setOpenPasswordForm(true)}>
@@ -151,158 +153,120 @@ export default function SecurityTap({ data }: Props) {
                 </Button>
             </section>
 
-            {openPasswordForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-4">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-bold">{data?.is_pass ? "Set password" : "Update password"}</h2>
-                            <button
-                                onClick={handleClose}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
+            <Dialog open={openPasswordForm} onOpenChange={setOpenPasswordForm}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>{data?.is_pass ? "Update password" : "Set password"}</DialogTitle>
+                        <DialogDescription>
+                            {data?.is_pass ? "Update your account password" : "Setup a password for your account"}
+                        </DialogDescription>
+                    </DialogHeader>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* New Password Field */}
-                            {data?.is_pass ? (
-                                <>
-
+                        {data?.is_pass && (
                                     <div>
-                                        <label htmlFor="old_password" className="block text-sm font-medium text-gray-700 mb-1">
+                                <Label htmlFor="old_password" className="text-foreground">
                                             Current password
-                                        </label>
-                                        <div className="relative">
+                                </Label>
+                                <div className="relative mt-1">
                                             <Input
                                                 id="old_password"
                                                 name="old_password"
                                                 type={showNewPassword ? "text" : "password"}
                                                 value={formData.old_password}
                                                 onChange={handleInputChange}
-                                                className={`pr-10 ${errors.old_password ? 'border-red-500' : ''}`}
+                                        className={`pr-10 ${errors.old_password ? 'border-destructive' : ''}`}
                                                 placeholder="Enter current password"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowNewPassword(!showNewPassword)}
-                                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                             >
                                                 {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                             </button>
                                         </div>
                                         {errors.old_password && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.old_password}</p>
+                                    <p className="text-destructive text-xs mt-1">{errors.old_password}</p>
                                         )}
                                     </div>
-                                    <div>
-                                        <label htmlFor="new_password" className="block text-sm font-medium text-gray-700 mb-1">
-                                            New password
-                                        </label>
-                                        <div className="relative">
-                                            <Input
-                                                id="new_password"
-                                                name="new_password"
-                                                type={showNewPassword ? "text" : "password"}
-                                                value={formData.new_password}
-                                                onChange={handleInputChange}
-                                                className={`pr-10 ${errors.new_password ? 'border-red-500' : ''}`}
-                                                placeholder="Enter new password"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowNewPassword(!showNewPassword)}
-                                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                            >
-                                                {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                            </button>
-                                        </div>
-                                        {errors.new_password && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.new_password}</p>
-                                        )}
-                                    </div>
-                                </>
-                            ) : (
+                        )}
+
                                 <div>
-                                    <label htmlFor="new_password" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="new_password" className="text-foreground">
                                         New password
-                                    </label>
-                                    <div className="relative">
+                            </Label>
+                            <div className="relative mt-1">
                                         <Input
                                             id="new_password"
                                             name="new_password"
                                             type={showNewPassword ? "text" : "password"}
                                             value={formData.new_password}
                                             onChange={handleInputChange}
-                                            className={`pr-10 ${errors.new_password ? 'border-red-500' : ''}`}
+                                    className={`pr-10 ${errors.new_password ? 'border-destructive' : ''}`}
                                             placeholder="Enter new password"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowNewPassword(!showNewPassword)}
-                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                         >
                                             {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                         </button>
                                     </div>
                                     {errors.new_password && (
-                                        <p className="text-red-500 text-xs mt-1">{errors.new_password}</p>
-                                    )}
-                                </div>
+                                <p className="text-destructive text-xs mt-1">{errors.new_password}</p>
                             )}
+                        </div>
 
-                            {/* Confirm Password Field */}
                             <div>
-                                <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700 mb-1">
+                            <Label htmlFor="confirm_password" className="text-foreground">
                                     Confirm password
-                                </label>
-                                <div className="relative">
+                            </Label>
+                            <div className="relative mt-1">
                                     <Input
                                         id="confirm_password"
                                         name="confirm_password"
                                         type={showConfirmPassword ? "text" : "password"}
                                         value={formData.confirm_password}
                                         onChange={handleInputChange}
-                                        className={`pr-10 ${errors.confirm_password ? 'border-red-500' : ''}`}
+                                    className={`pr-10 ${errors.confirm_password ? 'border-destructive' : ''}`}
                                         placeholder="Confirm new password"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     >
                                         {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                     </button>
                                 </div>
                                 {errors.confirm_password && (
-                                    <p className="text-red-500 text-xs mt-1">{errors.confirm_password}</p>
+                                <p className="text-destructive text-xs mt-1">{errors.confirm_password}</p>
                                 )}
                             </div>
+
                             {data?.is_pass && (
-                                <>
-                                    {/* Sign out checkbox */}
-                                    <div className="flex items-start space-x-3">
+                            <div className="flex items-start space-x-3 pt-2">
                                         <input
                                             id="signOutAllDevices"
                                             name="signOutAllDevices"
                                             type="checkbox"
                                             checked={signOutAllDevices}
                                             onChange={() => setSignOutAllDevices(!signOutAllDevices)}
-                                            className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    className="mt-1 h-4 w-4 text-primary focus:ring-primary border-input rounded"
                                         />
                                         <div>
-                                            <label htmlFor="signOutAllDevices" className="text-sm font-medium text-gray-700">
+                                    <Label htmlFor="signOutAllDevices" className="text-sm font-medium text-foreground cursor-pointer">
                                                 Sign out of all other devices
-                                            </label>
-                                            <p className="text-xs text-gray-500 mt-1">
+                                    </Label>
+                                    <p className="text-xs text-muted-foreground mt-1">
                                                 It is recommended to sign out of all other devices which may have used your old password and you will need to login again.
                                             </p>
                                         </div>
                                     </div>
-                                </>
                             )}
 
-                            {/* Action Buttons */}
                             <div className="flex justify-end space-x-3 pt-4">
                                 <Button
                                     type="button"
@@ -320,13 +284,12 @@ export default function SecurityTap({ data }: Props) {
                                 </Button>
                             </div>
                         </form>
-                    </div>
-                </div>
-            )}
+                </DialogContent>
+            </Dialog>
 
             {/* Connected Accounts Section */}
-            <section className="bg-muted rounded-lg p-6">
-                <div className="text-base font-semibold mb-4">Connected Account</div>
+            <section className="bg-muted rounded-lg p-6 border border-border mt-6">
+                <div className="text-base font-semibold mb-4 text-foreground">Connected Account</div>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         {data?.auth_provider === "GOOGLE" && (
@@ -336,9 +299,9 @@ export default function SecurityTap({ data }: Props) {
                             <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-logo.png" alt="facebook-logo" />
                         )}
                         {data?.auth_provider === "LOCAL" && (
-                            <User size={25} className="text-gray-400" />
+                            <User size={25} className="text-muted-foreground" />
                         )}
-                        <span className="font-medium text-sm">{data?.auth_provider?.toUpperCase()}</span>
+                        <span className="font-medium text-sm text-foreground">{data?.auth_provider?.toUpperCase()}</span>
                     </div>
                     <span className="text-sm text-muted-foreground">{data?.auth_provider === "LOCAL" ? "Self-registered" : data?.email}</span>
                 </div>
