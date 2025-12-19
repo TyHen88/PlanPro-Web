@@ -12,7 +12,7 @@ import TripDetailsModal from "./TripsDetailModal"
 import TripModal from "./TripsModal"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { tripsService } from "@/service/trips.service"
-import toast from "sonner"
+import { toast } from "sonner"
 import LandingSpinner from "@/components/shared/LandingSpinner"
 
 // Types matching API structure

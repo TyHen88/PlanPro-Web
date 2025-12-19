@@ -47,23 +47,24 @@ export const useWebSocket = (conversationId?: number) => {
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [currentEndpointIndex, setCurrentEndpointIndex] = useState(0)
   const [isReconnecting, setIsReconnecting] = useState(false)
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const connectionHealthCheckRef = useRef<NodeJS.Timeout | null>(null)
-  const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const connectionHealthCheckRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastActivityRef = useRef<number>(Date.now())
   const currentUserId = getCurrentUserId(session)
   const [connectionRequested, setConnectionRequested] = useState(false)
+  const pendingTypingRef = useRef<boolean | null>(null)
 
-  // shorter idle timeout for on-demand usage
-  const IDLE_TIMEOUT = 30 * 1000 // 30 seconds
+  // Idle timeout should never break an active chat; only used to tear down an unused transport.
+  const IDLE_TIMEOUT = 5 * 60 * 1000 // 5 minutes
 
-  const getCurrentEndpoint = () => {
+  const getCurrentEndpoint = useCallback(() => {
     const endpoints = [
       WEBSOCKET_CONFIG.ENDPOINTS.SOCKJS,
-      ...WEBSOCKET_CONFIG.ENDPOINTS.ALTERNATIVES
+      ...WEBSOCKET_CONFIG.ENDPOINTS.ALTERNATIVES,
     ]
     return endpoints[currentEndpointIndex] || WEBSOCKET_CONFIG.ENDPOINTS.SOCKJS
-  }
+  }, [currentEndpointIndex])
 
   const updateActivity = useCallback(() => {
     lastActivityRef.current = Date.now()
@@ -88,20 +89,29 @@ export const useWebSocket = (conversationId?: number) => {
     if (idleTimeoutRef.current) {
       clearTimeout(idleTimeoutRef.current)
     }
+
+    // If the user is actively in a conversation, do not auto-unsubscribe.
+    if (conversationId) return
+
     idleTimeoutRef.current = setTimeout(() => {
-      if (stompClientRef.current) {
-        try {
-          if (conversationSubRef.current) {
-            conversationSubRef.current.unsubscribe()
-            conversationSubRef.current = null
-          }
-          setTypingUsers([])
-          // mark as no longer needed until next action
-          setConnectionRequested(false)
-        } catch { }
+      // No active conversation + idle => fully disconnect transport.
+      try {
+        stompClientRef.current?.deactivate()
+      } catch {
+        // ignore
+      } finally {
+        stompClientRef.current = null
+        setIsConnected(false)
+        setTypingUsers([])
+        setConnectionRequested(false)
+
+        if (connectionHealthCheckRef.current) {
+          clearInterval(connectionHealthCheckRef.current)
+          connectionHealthCheckRef.current = null
+        }
       }
     }, IDLE_TIMEOUT)
-  }, [IDLE_TIMEOUT])
+  }, [IDLE_TIMEOUT, conversationId])
 
   const stopIdleTimeout = useCallback(() => {
     if (idleTimeoutRef.current) {
@@ -112,16 +122,18 @@ export const useWebSocket = (conversationId?: number) => {
 
   const startConnectionHealthCheck = useCallback(() => {
     if (connectionHealthCheckRef.current) {
-      clearTimeout(connectionHealthCheckRef.current)
+      clearInterval(connectionHealthCheckRef.current)
     }
+
     connectionHealthCheckRef.current = setInterval(() => {
+      // Placeholder for future checks (heartbeats handled by STOMP settings).
       if (!stompClientRef.current || !isConnected) return
     }, 30000)
   }, [isConnected])
 
   const stopConnectionHealthCheck = useCallback(() => {
     if (connectionHealthCheckRef.current) {
-      clearTimeout(connectionHealthCheckRef.current)
+      clearInterval(connectionHealthCheckRef.current)
       connectionHealthCheckRef.current = null
     }
   }, [])
@@ -149,26 +161,6 @@ export const useWebSocket = (conversationId?: number) => {
       return null
     }
   }, [currentUserId, getCurrentEndpoint])
-
-  const handleChatEvent = useCallback((event: ChatEvent) => {
-    updateActivity()
-    if (!event.eventType && event.messageId && event.content) {
-      handleNewMessage(event)
-      return
-    }
-    switch (event.eventType) {
-      case 'NEW_MESSAGE':
-        handleNewMessage(event); break
-      case 'MESSAGE_EDITED':
-        handleMessageEdited(event); break
-      case 'MESSAGE_DELETED':
-        handleMessageDeleted(event); break
-      case 'TYPING':
-        handleTypingEvent(event); break
-      default:
-        break
-    }
-  }, [updateActivity])
 
   const handleNewMessage = useCallback((event: ChatEvent) => {
     if (!event.messageId || !event.conversationId) return
@@ -235,6 +227,36 @@ export const useWebSocket = (conversationId?: number) => {
     })
   }, [updateActivity])
 
+  const handleChatEvent = useCallback((event: ChatEvent) => {
+    updateActivity()
+    if (!event.eventType && event.messageId && event.content) {
+      handleNewMessage(event)
+      return
+    }
+    switch (event.eventType) {
+      case 'NEW_MESSAGE':
+        handleNewMessage(event)
+        break
+      case 'MESSAGE_EDITED':
+        handleMessageEdited(event)
+        break
+      case 'MESSAGE_DELETED':
+        handleMessageDeleted(event)
+        break
+      case 'TYPING':
+        handleTypingEvent(event)
+        break
+      default:
+        break
+    }
+  }, [updateActivity, handleNewMessage, handleMessageEdited, handleMessageDeleted, handleTypingEvent])
+
+  // Keep a stable reference so subscriptions always call the latest handler without reconnect loops.
+  const handleChatEventRef = useRef(handleChatEvent)
+  useEffect(() => {
+    handleChatEventRef.current = handleChatEvent
+  }, [handleChatEvent])
+
   const retryConnection = useCallback(() => {
     const endpoints = [WEBSOCKET_CONFIG.ENDPOINTS.SOCKJS, ...WEBSOCKET_CONFIG.ENDPOINTS.ALTERNATIVES]
     if (currentEndpointIndex < endpoints.length - 1) {
@@ -279,7 +301,12 @@ export const useWebSocket = (conversationId?: number) => {
           const c = stompClientRef.current
           if (currentUserId && !userQueueSubRef.current && c) {
             userQueueSubRef.current = c.subscribe(WEBSOCKET_CONFIG.STOMP.DESTINATIONS.USER_QUEUE(currentUserId), (message) => {
-              try { const event: ChatEvent = JSON.parse(message.body); handleChatEvent(event) } catch { }
+              try {
+                const event: ChatEvent = JSON.parse(message.body)
+                handleChatEventRef.current(event)
+              } catch {
+                // ignore
+              }
             })
           }
 
@@ -287,7 +314,14 @@ export const useWebSocket = (conversationId?: number) => {
           if (c && conversationId && !conversationSubRef.current) {
             conversationSubRef.current = c.subscribe(
               WEBSOCKET_CONFIG.STOMP.DESTINATIONS.CONVERSATION_TOPIC(conversationId),
-              (message) => { try { const event: ChatEvent = JSON.parse(message.body); handleChatEvent(event) } catch { } }
+              (message) => {
+                try {
+                  const event: ChatEvent = JSON.parse(message.body)
+                  handleChatEventRef.current(event)
+                } catch {
+                  // ignore
+                }
+              },
             )
             c.publish({ destination: WEBSOCKET_CONFIG.STOMP.DESTINATIONS.JOIN_CONVERSATION, body: conversationId.toString() })
           }
@@ -341,7 +375,14 @@ export const useWebSocket = (conversationId?: number) => {
 
     conversationSubRef.current = stompClientRef.current.subscribe(
       WEBSOCKET_CONFIG.STOMP.DESTINATIONS.CONVERSATION_TOPIC(conversationId),
-      (message) => { try { const event: ChatEvent = JSON.parse(message.body); handleChatEvent(event) } catch { } }
+      (message) => {
+        try {
+          const event: ChatEvent = JSON.parse(message.body)
+          handleChatEventRef.current(event)
+        } catch {
+          // ignore
+        }
+      },
     )
     stompClientRef.current.publish({ destination: WEBSOCKET_CONFIG.STOMP.DESTINATIONS.JOIN_CONVERSATION, body: conversationId.toString() })
     startIdleTimeout()
@@ -372,11 +413,38 @@ export const useWebSocket = (conversationId?: number) => {
   const sendTypingIndicator = useCallback((isTyping: boolean) => {
     // Ensure connection on demand when typing
     ensureConnection()
-    if (stompClientRef.current && isConnected && conversationId) {
+
+    // If we're not connected yet, queue the latest typing state and flush when connected.
+    if (!isConnected) {
+      pendingTypingRef.current = isTyping
+      return
+    }
+
+    if (stompClientRef.current && conversationId) {
       updateActivity()
-      stompClientRef.current.publish({ destination: WEBSOCKET_CONFIG.STOMP.DESTINATIONS.TYPING, body: JSON.stringify({ conversationId, isTyping }) })
+      stompClientRef.current.publish({
+        destination: WEBSOCKET_CONFIG.STOMP.DESTINATIONS.TYPING,
+        body: JSON.stringify({ conversationId, isTyping }),
+      })
     }
   }, [isConnected, conversationId, updateActivity, ensureConnection])
+
+  useEffect(() => {
+    if (!isConnected || !conversationId) return
+    if (pendingTypingRef.current === null) return
+
+    const queued = pendingTypingRef.current
+    pendingTypingRef.current = null
+
+    try {
+      stompClientRef.current?.publish({
+        destination: WEBSOCKET_CONFIG.STOMP.DESTINATIONS.TYPING,
+        body: JSON.stringify({ conversationId, isTyping: queued }),
+      })
+    } catch {
+      // ignore
+    }
+  }, [isConnected, conversationId])
 
   return {
     isConnected,

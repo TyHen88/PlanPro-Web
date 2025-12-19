@@ -5,7 +5,7 @@ import ConnectTelegramBot from '../telegram/ConnectTelegramBot'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import TelegramService from '@/service/telegram.service'
 import { formatDate } from '@/utils/dateformat'
-import toast from 'sonner'
+import { toast } from 'sonner'
 import LoadingSpinner from '@/components/shared/LoadingSpinner'
 
 const SettingTap = () => {

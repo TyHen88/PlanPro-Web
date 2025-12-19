@@ -59,6 +59,7 @@ const IsTelegramPopup = ({ open, onClose }: { open: boolean, onClose: () => void
             </Dialog>
             {showProfile && (
                 <ProfileContrainer
+                    showProfile={showProfile}
                     profile_data={profile_data}
                     onClose={() => setShowProfile(false)}
                 />

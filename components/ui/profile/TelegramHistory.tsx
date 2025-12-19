@@ -6,7 +6,7 @@ import { Button } from '@/components/shared/ui/Button'
 import { Switch } from '@/components/shared/ui/swtich'
 import { Badge } from '@/components/shared/ui/badge'
 import LandingSpinner from '@/components/shared/LandingSpinner'
-import toast from 'sonner'
+import { toast } from 'sonner'
 import {
     User,
     Phone,

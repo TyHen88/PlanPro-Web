@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { useFormContextState } from "@/lib/hooks/useFromState";
 import useSignUpMutation from "@/lib/hooks/useSignUpMutation";
 import { PasswordUtils } from "@/utils/PasswordUtils";
-import toast from "sonner";
+import { toast } from "sonner";
 import { initiateGoogleRegister } from "@/utils/googleOAuth";
 
 interface RegisterFormValues {

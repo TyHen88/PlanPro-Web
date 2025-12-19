@@ -69,11 +69,8 @@ const WeTalkInput: React.FC<WeTalkInputProps> = ({
 
   const handleSendMessage = () => {
     if (!message.trim() || disabled || isSending) {
-      console.log('Cannot send message:', { messageEmpty: !message.trim(), disabled, isSending })
       return
     }
-    
-    console.log('WeTalkInput: Sending message:', message)
     onSendMessage(message)
     setMessage('')
     

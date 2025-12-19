@@ -16,10 +16,6 @@ const WeTalkContainer = () => {
   const [showUserSelection, setShowUserSelection] = useState(false)
   const [showGroupCreator, setShowGroupCreator] = useState(false)
   
-  // Debug session
-  console.log('WeTalkContainer session status:', status)
-  console.log('WeTalkContainer session data:', session)
-  
   const {
     contacts,
     myContacts,
@@ -46,15 +42,6 @@ const WeTalkContainer = () => {
     wsConnectionError,
     wsRetryConnection
   } = useFetchWeTalksWithQuery()
-
-  console.log("first")
-
-  // Debug active state
-  console.log('WeTalkContainer active state:', { 
-    // activeContact: activeContact?.name, 
-    activeConversation,
-    messagesCount: messages.length 
-  })
 
   const handleSendMessage = (text: string) => {
     // console.log('WeTalkContainer: handleSendMessage called with:', text)

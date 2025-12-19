@@ -83,7 +83,8 @@ const useFetchWeTalksWithQuery = () => {
     sendTypingIndicator,
     typingUsers,
     connectionError: wsConnectionError,
-    retryConnection: wsRetryConnection
+    retryConnection: wsRetryConnection,
+    ensureConnection,
   } = useWebSocket(activeConversation || undefined)
 
   // Fallback polling when WebSocket is not available
@@ -123,13 +124,19 @@ const useFetchWeTalksWithQuery = () => {
     }
   }, [activeConversation, session?.user?.id, sendMessageMutation])
 
+  // Ensure websocket is connected whenever a conversation is active
+  useEffect(() => {
+    if (activeConversation) {
+      ensureConnection()
+    }
+  }, [activeConversation, ensureConnection])
+
   // Handle typing indicator
   const handleTypingIndicator = useCallback((isTyping: boolean) => {
     setIsTyping(isTyping)
-    if (wsConnected) {
-      sendTypingIndicator(isTyping)
-    }
-  }, [wsConnected, sendTypingIndicator])
+    // sendTypingIndicator already calls ensureConnection internally
+    sendTypingIndicator(isTyping)
+  }, [sendTypingIndicator])
 
   const switchContact = useCallback(async (contact: MyContact) => {
     setActiveContact(contact)

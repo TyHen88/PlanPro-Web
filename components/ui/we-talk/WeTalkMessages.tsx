@@ -54,19 +54,36 @@ const WeTalkMessages: React.FC<WeTalkMessagesProps> = ({
     }
   }, [messages, scrollToBottom])
 
+  const prevScrollHeightRef = useRef<number>(0)
+  const isLoadingMoreRef = useRef(false)
+
   // Scroll to bottom when conversation changes
   useEffect(() => {
-    scrollToBottom('instant')
+    scrollToBottom('auto')
     isScrolledToBottomRef.current = true
   }, [activeContact?.conversationId, scrollToBottom])
+
+  // Preserve scroll position when loading older messages
+  useEffect(() => {
+    if (!messagesContainerRef.current) return
+
+    if (isLoadingMoreRef.current && !isFetchingNextPage) {
+      const newScrollHeight = messagesContainerRef.current.scrollHeight
+      const delta = newScrollHeight - prevScrollHeightRef.current
+      messagesContainerRef.current.scrollTop = delta
+      isLoadingMoreRef.current = false
+    }
+  }, [messages.length, isFetchingNextPage])
 
   const handleScroll = useCallback(() => {
     checkScrollPosition()
     
     if (!messagesContainerRef.current || !onLoadMore || !hasNextPage || isFetchingNextPage) return
 
-    const { scrollTop } = messagesContainerRef.current
-    if (scrollTop === 0) {
+    const { scrollTop, scrollHeight } = messagesContainerRef.current
+    if (scrollTop <= 20) {
+      prevScrollHeightRef.current = scrollHeight
+      isLoadingMoreRef.current = true
       onLoadMore()
     }
   }, [onLoadMore, hasNextPage, isFetchingNextPage, checkScrollPosition])

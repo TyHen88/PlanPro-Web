@@ -5,7 +5,7 @@ import { authService } from "@/service/auth.service";
 import { PasswordUtils } from "@/utils/PasswordUtils";
 import { Path } from "@/utils/enum";
 import { signIn } from "next-auth/react";
-import toast from "sonner";
+import { toast } from "sonner";
 
 const useSignUpMutation = (setError: unknown) => {
     const router = useRouter();
